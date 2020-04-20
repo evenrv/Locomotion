@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center">
+
+    <TextView
+        android:id="@+id/calibrateView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/calibrate"
+        android:textSize="25sp"/>
+
+    <Button
+        android:id="@+id/YesButton"
+        android:layout_width="211dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/calibrateView"
+        android:text="Yes" />
+
+    <Button
+        android:id="@+id/NoButton"
+        android:layout_width="211dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/calibrateView"
+        android:layout_toEndOf="@id/YesButton"
+        android:text="No" />
+</RelativeLayout>

@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:background="@drawable/background"
+    android:layout_height="match_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <Button
+        android:id="@+id/homebutton"
+        android:layout_width="60dp"
+        android:layout_height="53dp"
+        android:layout_below="@+id/toolbar4"
+        android:layout_alignParentRight="true"
+        android:layout_marginTop="-1dp"
+        android:background="@drawable/skjermbilde"
+        android:onClick="gohome" />
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar4"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+
+        android:minHeight="100dp"
+
+        android:background="#FB8375"
+        />
+
+    <Button
+        android:id="@+id/button"
+        android:layout_width="wrap_content"
+        android:layout_height="53dp"
+        android:layout_below="@+id/toolbar4"
+        android:layout_centerHorizontal="true"
+        android:background="@drawable/buttonstyle"
+        android:backgroundTint="#FB8375"
+        android:onClick="startnavigation"
+        android:text="Start navigation" />
+
+
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/button">
+
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:id="@+id/titlewindow"
+                android:layout_width="670dp"
+                android:layout_height="50dp"
+                android:textSize="25dp"/>
+
+
+            <TextView
+                android:id="@+id/instructions"
+                android:layout_below="@+id/titlewindow"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+        </RelativeLayout>
+
+
+    </ScrollView>
+
+
+</RelativeLayout>
+

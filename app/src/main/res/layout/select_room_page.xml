@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:background="@drawable/background"
+    android:layout_height="match_parent">
+
+
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="147dp"
+        android:layout_height="27dp"
+        android:layout_marginEnd="128dp"
+        android:layout_marginBottom="100dp"
+        android:text="Select Room"
+        android:textAppearance="@style/TextAppearance.AppCompat.Display2"
+        android:textSize="25dp"
+        app:layout_constraintBottom_toTopOf="@+id/navigationbutton4"
+        app:layout_constraintEnd_toStartOf="@+id/homebutton2" />
+
+    <Button
+        android:id="@+id/homebutton2"
+        android:layout_width="55dp"
+        android:layout_height="55dp"
+        android:background="@drawable/skjermbilde"
+        android:onClick="gohome"
+        app:layout_constraintEnd_toStartOf="@+id/questionbutton2"
+        app:layout_constraintTop_toBottomOf="@+id/toolbar2" />
+
+    <Button
+        android:id="@+id/questionbutton2"
+        style="@android:style/DeviceDefault.Light.SegmentedButton"
+        android:layout_width="55dp"
+        android:layout_height="55dp"
+        android:background="@android:drawable/ic_menu_help"
+        android:backgroundTint="#F80000"
+        android:onClick="questions"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/toolbar2" />
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar2"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:layout_row="0"
+        android:layout_column="0"
+        android:minHeight="100dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:background="#FB8375"
+        app:popupTheme="@style/AppTheme.PopupOverlay" />
+
+    <Button
+        android:id="@+id/navigationbutton4"
+        style="@style/Widget.AppCompat.Button"
+        android:layout_width="74dp"
+        android:layout_height="68dp"
+        android:layout_marginTop="180dp"
+        android:layout_marginEnd="16dp"
+        android:layout_x="12dp"
+        android:layout_y="180dp"
+        android:background="@android:drawable/ic_media_play"
+        android:backgroundTint="#E85151EB"
+        android:onClick="navigate"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Spinner
+        android:id="@+id/selectFloor"
+        android:layout_width="176dp"
+        android:layout_height="34dp"
+        android:layout_marginStart="16dp"
+        android:layout_x="173dp"
+        android:layout_y="237dp"
+        android:background="@android:drawable/spinner_background"
+        android:backgroundTint="#E85151EB"
+        app:layout_constraintBottom_toTopOf="@+id/roomNumber"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <Spinner
+        android:id="@+id/selectBuilding"
+        android:layout_width="176dp"
+        android:layout_height="34dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginBottom="9dp"
+        android:layout_x="1dp"
+        android:layout_y="236dp"
+        android:background="@android:drawable/spinner_background"
+        android:backgroundTint="#E85151EB"
+        app:layout_constraintBottom_toTopOf="@+id/selectFloor"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <EditText
+        android:id="@+id/roomNumber"
+        android:layout_width="125dp"
+        android:layout_height="45dp"
+        android:layout_marginStart="16dp"
+        android:layout_x="8dp"
+        android:layout_y="283dp"
+        android:backgroundTint="#E81B1B8F"
+        android:ems="10"
+        android:hint="Room Number"
+        android:inputType="textPersonName"
+        app:layout_constraintBottom_toTopOf="@+id/button2"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <Button
+        android:id="@+id/button2"
+        style="@style/Widget.AppCompat.Button"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginBottom="2dp"
+        android:layout_x="171dp"
+        android:layout_y="275dp"
+        android:background="@drawable/buttonstyle"
+        android:backgroundTint="#FB8375"
+        android:onClick="getroom"
+        android:text="@string/fetch_room_id"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <Button
+        android:id="@+id/getpath"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="2dp"
+        android:background="@drawable/buttonstyle"
+        android:backgroundTint="#FB8375"
+        android:onClick="getpath"
+        android:text="Get Path"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/button2" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
