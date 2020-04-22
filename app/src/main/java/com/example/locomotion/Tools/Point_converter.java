@@ -9,14 +9,11 @@ import static java.lang.Math.sin;
 
 public class Point_converter {
 
-    final double grad = 111319.99;
 
 
 
-    //Converting global coordinates in degrees to global coordinates in metres
-    //by multiplying every element in the list by grad = 111319.99
+    public double[][] convert(ArrayList<Double[]> checkPoints, Double[] CiscoCoords, float angle, float metersperlongitude, float metersperlatitude){
 
-    public double[][] convert(ArrayList<Double[]> checkPoints, Double[] CiscoCoords, float angle) {
         double[] xcoords = new double[checkPoints.size()];
         double[] ycoords = new double[checkPoints.size()];
 
@@ -25,12 +22,12 @@ public class Point_converter {
 
 
             //Creating a new point, which will be the same point as fetched from the url,
-            // but from loomos local reference frame. These points are also multiplied with grad,
-            // so that they're unit will be in meters.
+            // but from loomos local reference frame. These points are also multiplied with
+            // metersperLatitude and metersperlongitude so that they're unit will be in meters.
 
             Double[] singleLocalCheckpoint = {
-                    (checkPoints.get(position)[0] - CiscoCoords[0]) * grad,
-                    (checkPoints.get(position)[1] - CiscoCoords[1]) * grad
+                    (checkPoints.get(position)[0] - CiscoCoords[0]) * metersperlongitude,
+                    (checkPoints.get(position)[1] - CiscoCoords[1]) * metersperlatitude
             };
 
             //substituting the global point with the local point
@@ -40,7 +37,6 @@ public class Point_converter {
             System.out.println("y fra loomo uten transformasjon: " + checkPoints.get(position)[1]);
 
         }
-
 
 
         //Transforming the points with matrix multiplication. The output coordinates will

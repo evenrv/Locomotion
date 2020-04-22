@@ -22,7 +22,7 @@ public class Calibrate {
 
 
 
-    float  calibrate(Base mBase, Sensor mSensor) {
+    float[]  calibrate(Base mBase, Sensor mSensor) {
 
 
         SensorData mPose2DData = mSensor.querySensorData(Arrays.asList(Sensor.POSE_2D)).get(0);
@@ -39,13 +39,16 @@ public class Calibrate {
         float ciscoLat = (float) 58.33452693486112;
 
 
+        float ciscoLat1 = (float) (ciscoLat * (PI / 180));
+
+
         // calculating meters per degree longitude in longitude and latitude directions.
-        final double metersPerLongitude =  111319.488;
+        final double metersPerLatitude =  111132.92 - 559.82*cos(2* ciscoLat1) + 1.175 * cos(4 * ciscoLat1 - 0.0023 * cos(6*ciscoLat1));
 
         //((PI/180)*OriginCiscoPositiony) is for converting degrees to radians.
-        final double metersPerLatitude =   metersPerLongitude * cos(((PI/180)*ciscoLat));
+        final double metersPerLongitude =  111412.84 * cos(ciscoLat1) - 93.5 * cos(3 * ciscoLat1) + 0.118 * cos(5 * ciscoLat1);
 
-        System.out.println("metersPerLatitude: " + metersPerLatitude + "metersperlongitude: " + metersPerLongitude);
+        System.out.println("metersPerLatitude: " + metersPerLatitude + "\n" + "metersperlongitude: " + metersPerLongitude);
 
 
         float OriginCiscoPositionx =  ciscoLong * (float) metersPerLongitude;
@@ -72,7 +75,6 @@ public class Calibrate {
 
 
 
-
         //Defining 3 vectors that make up a triangle abc
         double[] aVector = {ExpectedCiscoPositionx2 - OriginCiscoPositionx, ExpectedCiscoPositiony2 - OriginCiscoPositiony};
         double[] bVector = {ActualCiscoPositionx2 - OriginCiscoPositionx, ActualCiscoPositiony2 - OriginCiscoPositiony};
@@ -87,7 +89,7 @@ public class Calibrate {
         System.out.println("Length b = " + sqrt(bVectorLengthSquared));
         System.out.println("Length c = " + sqrt(cVectorLengthSquared));
         System.out.println(" ");
-        System.out.println(bVector[1]);
+
 
 
         //Calculating the angle between the vector from the expected points and the vector from the
@@ -122,6 +124,7 @@ public class Calibrate {
         //Kjøreretning mot Vest:    58.33452618178464 og 8.576285073219395 til 58.33452693486112 og 8.576258173706947
         //Kjøreretning mot Sør:     58.33452693486112 og 8.576258173706947 til 58.33451544969185 og 8.576258890746544
 
-        return angle;
+        float[] calibInfo = {angle, (float) metersPerLongitude, (float) metersPerLatitude};
+        return calibInfo;
     }
 }

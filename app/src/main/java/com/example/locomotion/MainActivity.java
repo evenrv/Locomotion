@@ -81,6 +81,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     String floor;
 
     Double[] CiscoCoords;
+    float metersperLongitude;
+    float metersperLatitude;
 
     //Boolean for when loomo is ready to drive.
     boolean ready = false;
@@ -185,7 +187,11 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             public void onClick(View v) {
 
                 Calibrate calibrate = new Calibrate();
-                angle = calibrate.calibrate(mBase, mSensor);
+
+                float [] calibinfo = calibrate.calibrate(mBase, mSensor);
+                angle = calibinfo[1];
+                metersperLongitude = calibinfo[1];
+                metersperLatitude = calibinfo[2];
                 myDialog.dismiss();
             }
         });
@@ -414,16 +420,12 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                     pathInfo = JSONPath.pathData(jsonObjectPath);
 
 
-                } catch (IOException e) {
-                    e.printStackTrace();
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                } catch (ParseException e) {
+                } catch (IOException | ParseException | JSONException e) {
                     e.printStackTrace();
                 }
 
 
-        return pathInfo;
+            return pathInfo;
         }
 
 
@@ -434,8 +436,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 ArrayList<Integer> indexes = (PathInfo.flagIndexes);
 
 
-                output = converter.convert(checkPoints, CiscoCoords, angle);
+                output = converter.convert(checkPoints, CiscoCoords, angle, metersperLongitude, metersperLatitude);
 
         }
     }
 }
+
