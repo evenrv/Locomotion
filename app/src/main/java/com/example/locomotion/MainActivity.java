@@ -103,8 +103,10 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         InputStream input;
         input = getResources().openRawResource(R.raw.rooms);
 
-        //Room is a 2x array containing the IDs in one array, and roomNumbers in the other.
 
+        //"Room" is a double[][] array containing the IDs in one array, and the corresponding
+        // roomNumbers in the other. This means each element i in the ID array will fit each element
+        //i in the roomNumbers array
         try {
 
             Room = createrooms.createarrays(input);
@@ -162,17 +164,50 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             }
         });
 
+        //Loomo needs to be calibrated first thing after startup.
+        // A popup will appear, and asks if you want to calibrate Loomo now.
+        //There will be to buttons in the popup: One for yes, and one for no.
+        //Then an OnCLickListener is set for both buttons, so that when either is pressed
+        //a following instruction will take place.
+
+        Button yesButton;
+        Button noButton;
+        myDialog.setContentView(R.layout.popup);
+        yesButton = myDialog.findViewById(R.id.YesButton);
+        noButton = myDialog.findViewById(R.id.NoButton);
+        myDialog.show();
+
+        yesButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Calibrate calibrate = new Calibrate();
+
+                float [] calibinfo = calibrate.calibrate(mBase, mSensor);
+                angle = calibinfo[1];
+                metersperLongitude = calibinfo[1];
+                metersperLatitude = calibinfo[2];
+                myDialog.dismiss();
+            }
+        });
+
+        noButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                myDialog.dismiss();
+            }
+        });
+
+
     }
 
 
 
 
-    //This function will be called by the calibrate button, and will calibrate Loomo, so that it's
-    // x axis is pointed towards east. This is because longitude and latitude values are considered
-    // a good approximation to a cartesian coordinate-system on a small scale.
+    //This function will be called by the calibrate button, and will calibrate Loomo.
+    //When pressed, a popup will appear, equal to the pop up in the OnCreate function.
 
-    //test: This function may be implemented in the on create function alone, so that the loomo
-    //automatically calibrates as the application is opened.
+    //test: May also be implemented during driving so that the angle updates continiously.
 
     public void calibrate(View view){
         Button yesButton;
@@ -204,6 +239,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         });
     }
 
+
+    //When pressing the Start Navigation button (id: changeview), select_room_page will open.
+    //Two spinners are created
     public void startnavigation(View view){
 
         setContentView(R.layout.select_room_page);
@@ -238,6 +276,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                     .setAction("Action", null).show();
         }
 
+
         else {
             Snackbar.make(view, "Please enter a valid room first", Snackbar.LENGTH_SHORT)
                     .setAction("Action", null).show();
@@ -248,12 +287,17 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
 
     //Drives Loomo by sending in the previously made coordinate arrays.
+    //The function starts driving loomo by running the "drive"-function from the AddCheckpoints class
+    //If a valid room number is entered and a path is found. The boolean ready is set to true
+    //after parsing a route and theRoom = null if the roomnumber is invalid.
+    //If theRoom == 0, then a snackbar will appear, telling the user to  enter a room.
+
     public void navigate(View view) {
 
-        //Creating checkpoints
+
         if (theRoom != null && ready) {
 
-            checkpoint.add(mBase, mSensor, output);
+            checkpoint.drive(mBase, mSensor, output);
         }
 
         else{
@@ -289,7 +333,13 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         }
     }
 
+
+    //If the questionmark-button is pressed, then a new layout will appear,
+    // explaining how the application works
+    //mtitlewindow will contain the title, and minstructions will contain the instruction text.
     public void questions(View view){
+
+
 
         setContentView(R.layout.questions);
         TextView mtitlewindow = findViewById(R.id.titlewindow);
@@ -297,17 +347,18 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
         mtitlewindow.setText("How to use the application");
         StringBuilder stringBuilder= new StringBuilder();
-        String melding = "Calibration: Loomo will drive 1 meter forward, and back again. Then Loomo will rotate towards east \n\n" +
-                "This is an example of a room number: C2 036. Where C is the building name, " +
-                "2 is what floor the room is located at, and 036 is the room number.\n\n" +
-                "1. You can always press the logo to return to the front page\n" +
-                "2. When you press the 'Start Navigation'-button, you get redirected to " +
+        String melding = "Calibration: Loomo will drive 1 meter forward to calibrate. \n" +
+                 " You can always press the app logo to return to the front page\n" +
+                "Navigation:\n\n"+
+                "1. When you press the 'Start Navigation'-button, you get redirected to" +
                 "the page where you select what room you are going to. \n" +
-                "3. Start by selecting what building the room is in, then select what floor" +
+                "2. Start by selecting what building the room is in, then select what floor" +
                 " the room is at, and finally, type in the ending number of your room.\n " +
-                "4. Now press 'fetch room ID'. Loomo will now find where the room is located.\n" +
-                "5. Press 'Get Path'. Now, Loomo will download the route to the room you selected\n" +
-                "6. Press the play button to make loomo start navigating.";
+                "3. Now press 'fetch room ID'. Loomo will now find where the room is located.\n" +
+                "4. Press 'Get Path'. Now, Loomo will download the route to the room you selected\n" +
+                "5. Press the play button to make loomo start navigating." +
+                "This is an example of a room number: C2 036. Where C is the building name, " +
+                "2 is what floor the room is located at, and 036 is the room number.\n\n";
 
         stringBuilder.append(melding);
         minstructions.setText(stringBuilder.toString());

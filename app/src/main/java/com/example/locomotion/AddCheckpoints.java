@@ -26,7 +26,7 @@ public class AddCheckpoints {
 
 
     //The function that adds checkpoints for Loomo
-    public void add(Base mBase, Sensor mSensor, double[][] output) {
+    public void drive(Base mBase, Sensor mSensor, double[][] output) {
 
         double[] coordx = output[0];
         double[] coordy = output[1];
