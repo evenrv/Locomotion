@@ -1,11 +1,9 @@
-package com.example.locomotion;
+package com.example.locomotion.Driving;
 
 import com.segway.robot.algo.Pose2D;
 import com.segway.robot.algo.minicontroller.CheckPoint;
 import com.segway.robot.algo.minicontroller.CheckPointStateListener;
-import com.segway.robot.algo.minicontroller.ObstacleStateChangedListener;
 import com.segway.robot.sdk.locomotion.sbv.Base;
-import com.segway.robot.sdk.locomotion.sbv.LinearVelocity;
 import com.segway.robot.sdk.perception.sensor.Sensor;
 import com.segway.robot.sdk.perception.sensor.SensorData;
 
@@ -18,8 +16,6 @@ public class AddCheckpoints {
 
     private boolean driving;
     private boolean obstacle = false;
-    float sum_x;
-    float sum_y;
     float mUltrasonicDistance;
     float mLinearVelocity;
     ObstacleAvoidance obstacleAvoidance = new ObstacleAvoidance();
@@ -96,16 +92,21 @@ public class AddCheckpoints {
                 {
                     mBase.clearCheckPointsAndStop();
                     obstacle = true;
+
                     driving = false;
-                    obstacleAvoidance.avoid(mBase);
                 }
             }
 
-            if (obstacle)                   //Loomo needs to break the current for-loop,
-                                            // so that it doesn't follow the list,
-            {                               //as it would be wrong after avoiding a checkpoint
-                break;                      //Therefore, we need to find a new route to theRoom, and
-            }                               //Start this function again.
+            //Loomo needs to break the current for-loop, so that it doesn't follow the list, as it
+            // would be wrong after avoiding a checkpoint. Therefore, we need to find a new route to
+            // theRoom, and Start this function again.
+
+            if (obstacle)
+
+            {
+                obstacleAvoidance.avoid(mBase);
+                break;
+            }
         }
     }
 }

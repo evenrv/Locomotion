@@ -1,6 +1,7 @@
-package com.example.locomotion;
+package com.example.locomotion.Json;
 
-import com.example.locomotion.Json.ParseJSON;
+import com.example.locomotion.Datatype.PathInfo;
+
 
 import org.json.JSONException;
 import org.json.simple.JSONArray;

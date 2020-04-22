@@ -1,4 +1,4 @@
-package com.example.locomotion;
+package com.example.locomotion.Tools;
 
 import com.segway.robot.algo.Pose2D;
 import com.segway.robot.sdk.locomotion.sbv.Base;
@@ -22,7 +22,7 @@ public class Calibrate {
 
 
 
-    float[]  calibrate(Base mBase, Sensor mSensor) {
+    public float[]  calibrate(Base mBase, Sensor mSensor) {
 
 
         SensorData mPose2DData = mSensor.querySensorData(Arrays.asList(Sensor.POSE_2D)).get(0);
