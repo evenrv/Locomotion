@@ -3,11 +3,13 @@ package com.example.locomotion.Driving;
 import com.segway.robot.algo.Pose2D;
 import com.segway.robot.algo.minicontroller.CheckPoint;
 import com.segway.robot.algo.minicontroller.CheckPointStateListener;
+import com.segway.robot.sdk.locomotion.head.Head;
 import com.segway.robot.sdk.locomotion.sbv.Base;
 import com.segway.robot.sdk.perception.sensor.Sensor;
 import com.segway.robot.sdk.perception.sensor.SensorData;
 
 import java.util.Arrays;
+
 
 public class AddCheckpoints {
 
@@ -16,13 +18,15 @@ public class AddCheckpoints {
 
     private boolean driving;
     private boolean obstacle = false;
-    float mUltrasonicDistance;
-    float mLinearVelocity;
-    ObstacleAvoidance obstacleAvoidance = new ObstacleAvoidance();
+    boolean turnLeft;
+    private ObstacleAvoidance obstacleAvoidance = new ObstacleAvoidance();
 
 
     //The function that adds checkpoints for Loomo
-    public void drive(Base mBase, Sensor mSensor, double[][] output) {
+    public void drive(Base mBase, Sensor mSensor, Head mHead, double[][] output){
+
+        mBase.setControlMode(Base.CONTROL_MODE_NAVIGATION);
+        mBase.setLinearVelocity(0.4f);
 
         double[] coordx = output[0];
         double[] coordy = output[1];
@@ -33,9 +37,6 @@ public class AddCheckpoints {
         Pose2D pose2D = mBase.getOdometryPose(-1);
         mBase.setOriginalPoint(pose2D);
 
-        float linearVelocity = 3;
-        mBase.setLinearVelocity(linearVelocity);
-
 
 
         //Iterating through both coordinate-lists and adding one checkpoint each iteration.
@@ -45,8 +46,11 @@ public class AddCheckpoints {
 
 
             //x and y are the coordinates that will be used in mBase.addcheckPoint.
-            float x = (float) coordx[i];
-            float y = (float) coordy[i];
+            /*float x = (float) coordx[i];
+            float y = (float) coordy[i];*/
+
+            float x = (float) 2.0;
+            float y = (float) 0;
             mBase.addCheckPoint(x, y);
 
             driving = true;
@@ -54,21 +58,41 @@ public class AddCheckpoints {
 
 
 
-            //While "driving" is true, check if
-            //linear velocity < 0.1.
-            // If true, then driving is false, and the program will exit the loop, and do another
-            // iteration in the for-loop.
+            //Everything happening while Loomo is driving will be in this while loop.
             while (driving) {
 
-
+                //Fetching the ultrasonic distance
                 SensorData mUltrasonicData = mSensor.querySensorData(Arrays.
                         asList(Sensor.ULTRASONIC_BODY)).get(0);
-                mUltrasonicDistance = mUltrasonicData.getIntData()[0]; //Fetches the distance in a loop
+                float mUltrasonicDistance = mUltrasonicData.getIntData()[0];
 
 
-                SensorData mPose2DData = mSensor.querySensorData(Arrays.asList(Sensor.POSE_2D)).get(0);
-                Pose2D pose2D1 = mSensor.sensorDataToPose2D(mPose2DData);
-                mLinearVelocity = pose2D1.getLinearVelocity();
+                //Fetching distance on left and right side with IR sensors to determine the
+                // distance to the walls on the left- and right side.
+
+
+                SensorData mInfraredData = mSensor.querySensorData(Arrays.asList(Sensor.INFRARED_BODY)).get(0);
+                float mInfraredDistanceLeft = mInfraredData.getIntData()[0];
+                float mInfraredDistanceRight = mInfraredData.getIntData()[1];
+
+                if (mInfraredDistanceRight < 1300 && mInfraredDistanceRight < mInfraredDistanceLeft ){
+
+
+                    //How much Loomo will turn each iteration
+                    y += 0.001f;
+                    mBase.clearCheckPointsAndStop();
+                    mBase.addCheckPoint(x,y);
+                    System.out.println("NY Y: " + y);
+                }
+
+
+
+
+                System.out.println("left: " + mInfraredDistanceLeft);
+                System.out.println("Right: " + mInfraredDistanceRight);
+
+
+
 
 
                 //This function checks if loomo has reached its current checkpoint.
@@ -84,15 +108,15 @@ public class AddCheckpoints {
 
                     @Override
                     public void onCheckPointMiss(CheckPoint checkPoint, Pose2D realPose, boolean isLast, int reason) {
-
+                    //driving = false?
                     }
                 });
 
-                if (mUltrasonicDistance < 800)
+
+                 if (mUltrasonicDistance < 400)
                 {
                     mBase.clearCheckPointsAndStop();
                     obstacle = true;
-
                     driving = false;
                 }
             }
@@ -104,7 +128,7 @@ public class AddCheckpoints {
             if (obstacle)
 
             {
-                obstacleAvoidance.avoid(mBase);
+                obstacleAvoidance.avoid(mBase, mSensor, mHead);
                 break;
             }
         }

@@ -3,6 +3,7 @@ package com.example.locomotion;
 import android.app.Dialog;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -30,6 +31,7 @@ import com.example.locomotion.Tools.RoomCenter;
 import com.example.locomotion.Tools.UrlMaker;
 import com.google.android.material.snackbar.Snackbar;
 import com.segway.robot.sdk.base.bind.ServiceBinder;
+import com.segway.robot.sdk.locomotion.head.Head;
 import com.segway.robot.sdk.locomotion.sbv.Base;
 import com.segway.robot.sdk.perception.sensor.Sensor;
 import com.segway.robot.sdk.vision.Vision;
@@ -62,6 +64,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     Dialog myDialog;
 
     Base mBase;
+    Head mHead;
     AddCheckpoints checkpoint = new AddCheckpoints();
     Sensor mSensor;
     Vision mVision;
@@ -69,8 +72,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     Point_converter converter = new Point_converter();
     double[][] output;
-    public double[] coordx;
-    public double[] coordy;
     float angle;
 
     public Create_Rooms createrooms = new Create_Rooms();
@@ -100,6 +101,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         myDialog = new Dialog(this);
+
 
 
 
@@ -141,6 +143,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             }
         });
 
+
         //initializing the Base instance and binding the service
         mBase = Base.getInstance();
         mBase.bindService(getApplicationContext(), new ServiceBinder.BindStateListener() {
@@ -155,6 +158,20 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             }
         });
 
+        mHead = Head.getInstance();
+        mHead.bindService(getApplicationContext(), new ServiceBinder.BindStateListener() {
+            @Override
+            public void onBind() {
+
+            }
+
+            @Override
+            public void onUnbind(String reason) {
+
+            }
+        });
+
+
         mVision = Vision.getInstance();
         mVision.bindService(getApplicationContext(), new ServiceBinder.BindStateListener() {
             @Override
@@ -167,6 +184,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
             }
         });
+
+
 
         //Loomo needs to be calibrated first thing after startup.
         // A popup will appear, and asks if you want to calibrate Loomo now.
@@ -301,7 +320,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
         if (theRoom != null && ready) {
 
-            checkpoint.drive(mBase, mSensor, output);
+            checkpoint.drive(mBase, mSensor, mHead, output);
         }
 
         else{

@@ -33,9 +33,6 @@ public class Point_converter {
             //substituting the global point with the local point
             checkPoints.set(position, singleLocalCheckpoint);
 
-            System.out.println("x fra loomo uten transformasjon: " + checkPoints.get(position)[0]);
-            System.out.println("y fra loomo uten transformasjon: " + checkPoints.get(position)[1]);
-
         }
 
 
@@ -61,9 +58,9 @@ public class Point_converter {
             ycoords[position] =  singleTransformedCheckpoint[1];
 
 
-            System.out.println("final x: " + xcoords[position]);
+           /* System.out.println("final x: " + xcoords[position]);
             System.out.println("final y: " + ycoords[position]);
-
+*/
         }
 
         double[][] output = {xcoords,ycoords};

@@ -30,18 +30,30 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation 'androidx.appcompat:appcompat:1.1.0'
     implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
-    implementation 'com.google.android.material:material:1.0.0'
-    testImplementation 'junit:junit:4.12'
+    implementation 'com.google.android.material:material:1.1.0'
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
-    implementation 'com.segway.robot:sensorsdk:0.6.746'
-    implementation 'com.segway.robot:basesdk:0.6.746'
+
     implementation 'com.googlecode.json-simple:json-simple:1.1.1'
     implementation group: 'com.googlecode.json-simple', name: 'json-simple', version: '1.1.1'
-    implementation 'com.segway.robot:visionsdk:0.6.547' //Implementing vision dependency
-    implementation 'com.segway.robot:speech-sdk:0.5.327'//Implementing speak dependency
-    implementation 'com.segway.robot:headsdk:0.6.746'  //Implementing head dependency, to move loomos head
+
+    implementation 'com.segway.robot:visionsdk:0.6.874'
+    implementation 'com.segway.robot:speech-sdk:0.5.327'
+    implementation 'com.segway.robot:headsdk:0.6.999'
+    implementation 'com.segway.robot:basesdk:0.6.999'   //Implementing base dependency, to move Loomo's base
+    implementation 'com.segway.robot:sensorsdk:0.6.999'
+    implementation 'com.segway.robot:robot-connectivity-sdk:0.5.104'
+    implementation 'com.segway.robot:mobile-connectivity-sdk:0.5.104'
     implementation 'com.segway.robot:emoji:0.1.28'
     implementation 'com.segway.robot:support-lib:1.1.2'
+    implementation 'com.squareup.okhttp3:okhttp:4.4.1'
+    implementation 'androidx.appcompat:appcompat:1.1.0'
+    testImplementation 'junit:junit:4.13'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.1'
+
+
+
+
+
 
 }
