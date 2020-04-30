@@ -7,7 +7,6 @@ import com.segway.robot.sdk.locomotion.head.Head;
 import com.segway.robot.sdk.locomotion.sbv.Base;
 import com.segway.robot.sdk.perception.sensor.Sensor;
 import com.segway.robot.sdk.perception.sensor.SensorData;
-
 import java.util.Arrays;
 
 
@@ -18,12 +17,14 @@ public class AddCheckpoints {
 
     private boolean driving;
     private boolean obstacle = false;
-    boolean turnLeft;
     private ObstacleAvoidance obstacleAvoidance = new ObstacleAvoidance();
+    float correctedY;
 
 
     //The function that adds checkpoints for Loomo
     public void drive(Base mBase, Sensor mSensor, Head mHead, double[][] output){
+        correctedY = 0.0005f;
+
 
         mBase.setControlMode(Base.CONTROL_MODE_NAVIGATION);
         mBase.setLinearVelocity(0.4f);
@@ -52,10 +53,8 @@ public class AddCheckpoints {
             float x = (float) 2.0;
             float y = (float) 0;
             mBase.addCheckPoint(x, y);
-
+            correctedY = y;
             driving = true;
-
-
 
 
             //Everything happening while Loomo is driving will be in this while loop.
@@ -75,16 +74,47 @@ public class AddCheckpoints {
                 float mInfraredDistanceLeft = mInfraredData.getIntData()[0];
                 float mInfraredDistanceRight = mInfraredData.getIntData()[1];
 
-                if (mInfraredDistanceRight < 1300 && mInfraredDistanceRight < mInfraredDistanceLeft ){
+
+                //In each iteration, if the right infrared sensor is closer than 1300 mm from a
+                // wall, an increment will be added to the y coordinate.
+                if (mInfraredDistanceRight < 1400 && mInfraredDistanceRight < mInfraredDistanceLeft ){
 
 
                     //How much Loomo will turn each iteration
-                    y += 0.001f;
+                    correctedY += 0.0005f;
+                    float rotationAngle;
+
+                    //(x - currentX) is the distance to the point in x-direction
+                    //(correctedY - currentY) is the distance to the point in y-direction
+
+                    float currentX = pose2D.getX();
+                    float currentY = pose2D.getY();
+
+                    rotationAngle = (float)( (180/Math.PI) * Math.atan((correctedY - currentY) / (x - currentX)) );
                     mBase.clearCheckPointsAndStop();
-                    mBase.addCheckPoint(x,y);
-                    System.out.println("NY Y: " + y);
+                    mBase.addCheckPoint(x,correctedY);
+                    System.out.println("--------  " + "NEW y: " + correctedY + "With this rotation angle: " + rotationAngle + "  --------");
                 }
 
+
+                if (mInfraredDistanceLeft < 1400 && mInfraredDistanceLeft < mInfraredDistanceRight ){
+
+
+                    //How much Loomo will turn each iteration
+                    correctedY -= 0.0005f;
+                    float rotationAngle;
+
+                    //(x - currentX) is the distance to the point in x-direction
+                    //(correctedY - currentY) is the distance to the point in y-direction
+
+                    float currentX = pose2D.getX();
+                    float currentY = pose2D.getY();
+
+                    rotationAngle = (float)( (180/Math.PI) * Math.atan((correctedY - currentY) / (x - currentX)) );
+                    mBase.clearCheckPointsAndStop();
+                    mBase.addCheckPoint(x,correctedY);
+                    System.out.println("--------  " + "NEW y: " + correctedY + "With this rotation angle: " + rotationAngle + "  --------");
+                }
 
 
 
@@ -113,7 +143,7 @@ public class AddCheckpoints {
                 });
 
 
-                 if (mUltrasonicDistance < 400)
+                 if (mUltrasonicDistance < 500)
                 {
                     mBase.clearCheckPointsAndStop();
                     obstacle = true;
@@ -128,7 +158,7 @@ public class AddCheckpoints {
             if (obstacle)
 
             {
-                obstacleAvoidance.avoid(mBase, mSensor, mHead);
+                obstacleAvoidance.avoid(mBase, mSensor, mHead, pose2D, obstacle);
                 break;
             }
         }

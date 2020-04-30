@@ -20,6 +20,7 @@ import com.example.locomotion.Datatype.ListInteger;
 import com.example.locomotion.Datatype.PathInfo;
 import com.example.locomotion.Datatype.RoomInfo;
 import com.example.locomotion.Driving.AddCheckpoints;
+import com.example.locomotion.Driving.ObstacleAvoidance;
 import com.example.locomotion.FindRoom.Find_Room;
 import com.example.locomotion.FindRoom.ParseRoom;
 import com.example.locomotion.Json.Create_Rooms;
@@ -125,6 +126,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         //and RoomID as the second element of the Room array
         roomNumber = Room[0];
         RoomID = Room[1];
+
+
 
 
 
@@ -310,13 +313,12 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
 
     //Drives Loomo by sending in the previously made coordinate arrays.
-    //The function starts driving loomo by running the "drive"-function from the AddCheckpoints class
-    //If a valid room number is entered and a path is found. The boolean ready is set to true
+    //The function starts driving loomo by running the "drive"-function from the AddCheckpoints
+    //class if a valid room number is entered and a path is found. The boolean ready is set to true
     //after parsing a route and theRoom = null if the roomnumber is invalid.
     //If theRoom == 0, then a snackbar will appear, telling the user to  enter a room.
 
     public void navigate(View view) {
-
 
         if (theRoom != null && ready) {
 
@@ -451,7 +453,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         @Override
         protected RoomInfo doInBackground(URL... urls) {
 
-            ParseRoom parseRoom = new ParseRoom();
             String url = ParseRoom.setUrl(theRoom);
             RoomInfo roomInfo;
 
@@ -465,7 +466,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         protected void onPostExecute(RoomInfo roomInfo) {
 
 
-            RoomCenter roomCenter = new RoomCenter();
+
             Double[] avgCoord = RoomCenter.calculateAvg(roomInfo.coords);               // calculates "center" of room based on the coordinates of the corners
 
             System.out.println("Center of Room: " + avgCoord[0] + " " + avgCoord[1] + ", at floor: " + roomInfo.z);
@@ -483,12 +484,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     private class Getroute extends AsyncTask<URL, ListInteger, PathInfo> {
         @Override
         protected PathInfo doInBackground(URL... urls) {
+
             JSONObject jsonObjectPath;
-            JSONPath jsonPath = new JSONPath();
             PathInfo pathInfo = new PathInfo();
-            ParseJSON parseJSON = new ParseJSON();
-
-
                 try {
                     jsonObjectPath = ParseJSON.readJsonFromUrl(urlPath);
                     pathInfo = JSONPath.pathData(jsonObjectPath);
@@ -515,4 +513,3 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         }
     }
 }
-

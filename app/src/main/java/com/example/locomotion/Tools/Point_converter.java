@@ -1,12 +1,7 @@
 package com.example.locomotion.Tools;
-
-import com.example.locomotion.R;
+import com.segway.robot.sdk.vision.Vision;
 
 import java.util.ArrayList;
-
-import static java.lang.Math.cos;
-import static java.lang.Math.sin;
-
 public class Point_converter {
 
 
@@ -25,6 +20,7 @@ public class Point_converter {
             // but from loomos local reference frame. These points are also multiplied with
             // metersperLatitude and metersperlongitude so that they're unit will be in meters.
 
+
             Double[] singleLocalCheckpoint = {
                     (checkPoints.get(position)[0] - CiscoCoords[0]) * metersperlongitude,
                     (checkPoints.get(position)[1] - CiscoCoords[1]) * metersperlatitude
@@ -32,8 +28,8 @@ public class Point_converter {
 
             //substituting the global point with the local point
             checkPoints.set(position, singleLocalCheckpoint);
-
         }
+
 
 
         //Transforming the points with matrix multiplication. The output coordinates will
@@ -58,9 +54,8 @@ public class Point_converter {
             ycoords[position] =  singleTransformedCheckpoint[1];
 
 
-           /* System.out.println("final x: " + xcoords[position]);
-            System.out.println("final y: " + ycoords[position]);
-*/
+           System.out.println("Transformed x: " + xcoords[position]);
+           System.out.println("Transformed y: " + ycoords[position]);
         }
 
         double[][] output = {xcoords,ycoords};
