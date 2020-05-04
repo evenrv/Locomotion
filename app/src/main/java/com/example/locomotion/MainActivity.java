@@ -3,7 +3,6 @@ package com.example.locomotion;
 import android.app.Dialog;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -31,6 +30,7 @@ import com.example.locomotion.Tools.Point_converter;
 import com.example.locomotion.Tools.RoomCenter;
 import com.example.locomotion.Tools.UrlMaker;
 import com.google.android.material.snackbar.Snackbar;
+import com.segway.robot.algo.Pose2D;
 import com.segway.robot.sdk.base.bind.ServiceBinder;
 import com.segway.robot.sdk.locomotion.head.Head;
 import com.segway.robot.sdk.locomotion.sbv.Base;
@@ -92,7 +92,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     //Boolean for when loomo is ready to drive.
     boolean ready = false;
-
 
 
     @Override
@@ -319,6 +318,10 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     //If theRoom == 0, then a snackbar will appear, telling the user to  enter a room.
 
     public void navigate(View view) {
+        /*ObstacleAvoidance obstacleAvoidance = new ObstacleAvoidance();
+        Pose2D pose2D = mBase.getOdometryPose(-1);
+        mBase.setOriginalPoint(pose2D);
+        obstacleAvoidance.avoid(mBase, mSensor, mHead, pose2D);*/
 
         if (theRoom != null && ready) {
 
