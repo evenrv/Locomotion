@@ -23,62 +23,45 @@ public class ObstacleAvoidance{
     //Basic function for driving around the obstacle on the left side
     private void goLeft(Base mBase, Sensor mSensor, Head mHead, Pose2D pose2D, float currentx, float currenty, float currentTheta){
 
+        //Driving to the left
         mBase.addCheckPoint(currentx,currenty + 0.7f);
+        //Driving straight forward 1 meter
         mBase.addCheckPoint(currentx + 1f, currenty + 0.7f);
+        //Driving back to the original track, but 1 meter forward, and hopefully past the obstacle
         mBase.addCheckPoint(currentx + 1f, currenty);
-
-        //Need to wait with getting the coordinates.
-        currentx = pose2D.getX();
-        currenty = pose2D.getY();
-        currentTheta = pose2D.getTheta();
-
-        mBase.addCheckPoint(currentx, currenty, (float) (currentTheta + Math.PI / 2));
     }
-
-
 
 
     //Deciding what to do to avoid the obstacle
     public void avoid(Base mBase, Sensor mSensor, Head mHead, Pose2D pose2D) {
     mBase.setControlMode(Base.CONTROL_MODE_NAVIGATION);
 
-        SensorData mUltrasonicData = mSensor.querySensorData(Arrays.
-                asList(Sensor.ULTRASONIC_BODY)).get(0);
-        float mUltrasonicDistance = mUltrasonicData.getIntData()[0];
-        System.out.println("-------------Distance: " + mUltrasonicDistance + "-------------");
-
-
-
         //Fetching the current position
         float currentx = pose2D.getX();
         float currenty = pose2D.getY();
         float currentTheta = pose2D.getTheta();
 
-        System.out.println(currentx);
-        System.out.println(currenty);
-        System.out.println(currentTheta);
+        System.out.println("currentx: " + currentx);
+        System.out.println("currentx: " + currenty);
+        System.out.println("currentTheta" + currentTheta);
 
 
         //Checking left side
         float checkLeftAngle = (float) (currentTheta - Math.PI / 4);
-        boolean checkingLeft = true;
         mBase.addCheckPoint(0, 0, checkLeftAngle);
+        boolean checkingLeft = true;
 
         while (checkingLeft){
 
-            SensorData mUltrasonicData1 = mSensor.querySensorData(Arrays.
+            SensorData mUltrasonicData = mSensor.querySensorData(Arrays.
                     asList(Sensor.ULTRASONIC_BODY)).get(0);
-            float mUltrasonicDistance1 = mUltrasonicData1.getIntData()[0];
+            float mUltrasonicDistance = mUltrasonicData.getIntData()[0];
 
-            if (mUltrasonicDistance1 > 1300){
+            if (mUltrasonicDistance > 1300){
                 goLeft(mBase, mSensor, mHead, pose2D, currentx, currenty, currentTheta);
                 checkingLeft = false;
             }
         }
-
-
-
-        System.out.println("current theta: " + currentTheta);
 
 
 

@@ -318,10 +318,10 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     //If theRoom == 0, then a snackbar will appear, telling the user to  enter a room.
 
     public void navigate(View view) {
-        /*ObstacleAvoidance obstacleAvoidance = new ObstacleAvoidance();
+        ObstacleAvoidance obstacleAvoidance = new ObstacleAvoidance();
         Pose2D pose2D = mBase.getOdometryPose(-1);
         mBase.setOriginalPoint(pose2D);
-        obstacleAvoidance.avoid(mBase, mSensor, mHead, pose2D);*/
+        obstacleAvoidance.avoid(mBase, mSensor, mHead, pose2D);
 
         if (theRoom != null && ready) {
 
@@ -373,20 +373,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         TextView mtitlewindow = findViewById(R.id.titlewindow);
         TextView minstructions =findViewById(R.id.instructions);
 
-        mtitlewindow.setText("How to use the application");
+        mtitlewindow.setText(getResources().getString(R.string.instructionsHeader));
         StringBuilder stringBuilder= new StringBuilder();
-        String melding = "Calibration: Loomo will drive 1 meter forward to calibrate. \n" +
-                 " You can always press the app logo to return to the front page\n" +
-                "Navigation:\n\n"+
-                "1. When you press the 'Start Navigation'-button, you get redirected to" +
-                "the page where you select what room you are going to. \n" +
-                "2. Start by selecting what building the room is in, then select what floor" +
-                " the room is at, and finally, type in the ending number of your room.\n " +
-                "3. Now press 'fetch room ID'. Loomo will now find where the room is located.\n" +
-                "4. Press 'Get Path'. Now, Loomo will download the route to the room you selected\n" +
-                "5. Press the play button to make loomo start navigating." +
-                "This is an example of a room number: C2 036. Where C is the building name, " +
-                "2 is what floor the room is located at, and 036 is the room number.\n\n";
+        String melding = getResources().getString(R.string.instructions);
 
         stringBuilder.append(melding);
         minstructions.setText(stringBuilder.toString());
