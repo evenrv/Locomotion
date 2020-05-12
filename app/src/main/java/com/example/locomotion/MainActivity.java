@@ -145,7 +145,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             }
         });
 
-
         //initializing the Base instance and binding the service
         mBase = Base.getInstance();
         mBase.bindService(getApplicationContext(), new ServiceBinder.BindStateListener() {
@@ -173,7 +172,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             }
         });
 
-
         mVision = Vision.getInstance();
         mVision.bindService(getApplicationContext(), new ServiceBinder.BindStateListener() {
             @Override
@@ -186,8 +184,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
             }
         });
-
-
 
         //Loomo needs to be calibrated first thing after startup.
         // A popup will appear, and asks if you want to calibrate Loomo now.
@@ -222,12 +218,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 myDialog.dismiss();
             }
         });
-
-
     }
-
-
-
 
     //This function will be called by the calibrate button, and will calibrate Loomo.
     //When pressed, a popup will appear, equal to the pop up in the OnCreate function.
@@ -373,6 +364,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         TextView mtitlewindow = findViewById(R.id.titlewindow);
         TextView minstructions =findViewById(R.id.instructions);
 
+        //Importing resource string instructionsHeader and instructions
         mtitlewindow.setText(getResources().getString(R.string.instructionsHeader));
         StringBuilder stringBuilder= new StringBuilder();
         String melding = getResources().getString(R.string.instructions);
@@ -499,9 +491,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 ArrayList<Double[]> checkPoints = (PathInfo.coordinateArray);
                 ArrayList<Integer> indexes = (PathInfo.flagIndexes);
 
-
                 output = converter.convert(checkPoints, CiscoCoords, angle, metersperLongitude, metersperLatitude);
-
         }
     }
 }

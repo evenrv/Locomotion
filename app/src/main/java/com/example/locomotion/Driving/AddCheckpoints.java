@@ -8,8 +8,6 @@ import com.segway.robot.sdk.locomotion.sbv.Base;
 import com.segway.robot.sdk.perception.sensor.Sensor;
 import com.segway.robot.sdk.perception.sensor.SensorData;
 import java.util.Arrays;
-import java.util.Timer;
-
 
 public class AddCheckpoints {
 
@@ -159,7 +157,6 @@ public class AddCheckpoints {
                      boolean waitForObstacle = true;
                      timerValue = 0;
 
-
                     while(waitForObstacle){
                         SensorData mUltrasonicData1 = mSensor.querySensorData(Arrays.
                                 asList(Sensor.ULTRASONIC_BODY)).get(0);
@@ -192,7 +189,7 @@ public class AddCheckpoints {
             if (obstacle) {
                 System.out.println("-----Starting avoidance-function-----");
                 obstacleAvoidance.avoid(mBase, mSensor, mHead, pose2D);
-                break;
+                mBase.addCheckPoint(x,correctedY);
             }
         }
     }
