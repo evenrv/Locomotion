@@ -223,7 +223,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     //This function will be called by the calibrate button, and will calibrate Loomo.
     //When pressed, a popup will appear, equal to the pop up in the OnCreate function.
 
-    //test: May also be implemented during driving so that the angle updates continiously.
 
     public void calibrate(View view){
         Button yesButton;
@@ -309,10 +308,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     //If theRoom == 0, then a snackbar will appear, telling the user to  enter a room.
 
     public void navigate(View view) {
-        ObstacleAvoidance obstacleAvoidance = new ObstacleAvoidance();
-        Pose2D pose2D = mBase.getOdometryPose(-1);
-        mBase.setOriginalPoint(pose2D);
-        obstacleAvoidance.avoid(mBase, mSensor, mHead, pose2D);
 
         if (theRoom != null && ready) {
 
@@ -431,9 +426,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
 
     private class GetRoom extends AsyncTask<URL, ListInteger, RoomInfo>
-
     {
-
         @Override
         protected RoomInfo doInBackground(URL... urls) {
 
@@ -450,8 +443,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         protected void onPostExecute(RoomInfo roomInfo) {
 
 
-
-            Double[] avgCoord = RoomCenter.calculateAvg(roomInfo.coords);               // calculates "center" of room based on the coordinates of the corners
+            // calculates "center" of room based on the coordinates of the corners
+            Double[] avgCoord = RoomCenter.calculateAvg(roomInfo.coords);
 
             System.out.println("Center of Room: " + avgCoord[0] + " " + avgCoord[1] + ", at floor: " + roomInfo.z);
 

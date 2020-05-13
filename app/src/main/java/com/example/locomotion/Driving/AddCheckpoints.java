@@ -1,5 +1,6 @@
 package com.example.locomotion.Driving;
 
+import com.example.locomotion.R;
 import com.segway.robot.algo.Pose2D;
 import com.segway.robot.algo.minicontroller.CheckPoint;
 import com.segway.robot.algo.minicontroller.CheckPointStateListener;
@@ -23,13 +24,10 @@ public class AddCheckpoints {
 
 
     //The function that adds checkpoints for Loomo
-    public void drive(Base mBase, Sensor mSensor, Head mHead, double[][] output){
-        correctedY = 0.0005f;
+    public void drive(final Base mBase, Sensor mSensor, Head mHead, double[][] output){
 
 
         mBase.setControlMode(Base.CONTROL_MODE_NAVIGATION);
-        mBase.setLinearVelocity(1);
-        mBase.setAngularVelocity(0.5f);
 
         double[] coordx = output[0];
         double[] coordy = output[1];
@@ -75,10 +73,10 @@ public class AddCheckpoints {
                 float mInfraredDistanceRight = mInfraredData.getIntData()[1];
 
 
-                //In each iteration, if the right infrared sensor is closer than 1400 mm from a
+                //In each iteration, if the right infrared sensor is closer than 1250 mm from a
                 //wall, an increment will be added to the y coordinate.
                 //(y is positive to the left while looking forward).
-                if (mInfraredDistanceRight < 1400 && mInfraredDistanceRight < mInfraredDistanceLeft ){
+                if (mInfraredDistanceRight < 1250 && mInfraredDistanceRight < mInfraredDistanceLeft ){
 
 
                     //How much Loomo will turn each iteration
@@ -97,9 +95,9 @@ public class AddCheckpoints {
                     System.out.println("--------  " + "NEW y: " + correctedY + "With this rotation angle: " + rotationAngle + "  --------");
                 }
 
-                //If the left sensor is less than 1400 mm away from a wall, '
-                //then a decrement will be subtracted from y. This will make loomo turn right.
-                if (mInfraredDistanceLeft < 1400 && mInfraredDistanceLeft < mInfraredDistanceRight ){
+                //If the left sensor is less than 1250 mm away from a wall, then a decrement will
+                //be subtracted from y. This will make loomo turn right.
+                if (mInfraredDistanceLeft < 1250 && mInfraredDistanceLeft < mInfraredDistanceRight ){
 
 
                     //How much Loomo will turn each iteration
@@ -123,7 +121,6 @@ public class AddCheckpoints {
                 System.out.println("Right: " + mInfraredDistanceRight);
 
 
-
                 //This function checks if loomo has reached its current checkpoint.
                 //If it has, then driving = false, and a new iteration will start in the for loop.
                 mBase.setOnCheckPointArrivedListener(new CheckPointStateListener() {
@@ -131,8 +128,18 @@ public class AddCheckpoints {
                     @Override
                     public void onCheckPointArrived(CheckPoint checkPoint, Pose2D realPose, boolean isLast) {
 
-                        driving = false;
+                        //Check if this checkpoint is a elevator checkpoint
 
+                        /*if (elevator at (x,y)){
+                        
+                        Elevator elevator = new Elevator();
+
+                        elevator.useElevator(mBase);
+
+                        }
+                        */
+
+                        driving = false;
                     }
 
                     @Override
@@ -161,13 +168,16 @@ public class AddCheckpoints {
                         SensorData mUltrasonicData1 = mSensor.querySensorData(Arrays.
                                 asList(Sensor.ULTRASONIC_BODY)).get(0);
                         float mUltrasonicDistance1 = mUltrasonicData1.getIntData()[0];
+
                         System.out.println("mUltrasonicDistance1:  " + mUltrasonicDistance1);
                         timerValue++;
                         System.out.println("Timer value: " + timerValue);
 
+                        //If the obstacle moves, Loomo will add a checkpoint at the previous checkpoint
                         if(mUltrasonicDistance1 > 900){
                             waitForObstacle = false;
                             obstacle = false;
+                            mBase.addCheckPoint(x,correctedY);
                         }
 
                         else if (timerValue == 5000){
@@ -178,13 +188,6 @@ public class AddCheckpoints {
                     }
                 }
             }
-
-
-            //Loomo needs to break the current for-loop, so that it doesn't follow the current list,
-            // as it would be giving wrong checkpoints after avoiding a checkpoint. Therefore we
-            // need to find a new route to theRoom, and Start this function again.
-            //TEST: Or would it? Can we not drive around the obstacle and then follow the list
-            // further?
 
             if (obstacle) {
                 System.out.println("-----Starting avoidance-function-----");
