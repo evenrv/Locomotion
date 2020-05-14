@@ -128,13 +128,13 @@ public class ObstacleAvoidance{
                     asList(Sensor.ULTRASONIC_BODY)).get(0);
             float mUltrasonicDistance = mUltrasonicData.getIntData()[0];
 
-            if (mUltrasonicDistance > 900){
+            if (mUltrasonicDistance > 1000){
                 goLeft(mBase);
                 checkingLeft = false;
                 goingLeft = true;
             }
 
-            else if (timer == 2000){
+            else if (timer == 3500){
                 System.out.println("Not possible to go left.");
                 checkingLeft = false;
                 goingLeft = false;
@@ -164,7 +164,7 @@ public class ObstacleAvoidance{
                     checkingRight = false;
                 }
 
-                else if (timer == 2000){
+                else if (timer == 3500){
                     System.out.println("Not possible to drive around. Calculate new route...");
                 }
             }
