@@ -37,7 +37,9 @@ public class AddCheckpoints {
         mBase.cleanOriginalPoint();
         Pose2D pose2D = mBase.getOdometryPose(-1);
         mBase.setOriginalPoint(pose2D);
+        pose2D.getX();
 
+        System.out.println("POSEx = : " + pose2D);
 
 
         //Iterating through both coordinate-lists and adding one checkpoint each iteration.
@@ -90,9 +92,9 @@ public class AddCheckpoints {
                     float currentY = pose2D.getY();
 
                     rotationAngle = (float)( (180/Math.PI) * Math.atan((correctedY - currentY) / (x - currentX)) );
-                    // TEST: mBase.clearCheckPointsAndStop();
+                    mBase.clearCheckPointsAndStop();
                     mBase.addCheckPoint(x,correctedY);
-                    System.out.println("--------  " + "NEW y: " + correctedY + "With this rotation angle: " + rotationAngle + "  --------");
+                    System.out.println("--------  " + "NEW y: " + correctedY + "With this rotation angle: " + rotationAngle + " degrees  --------");
                 }
 
                 //If the left sensor is less than 1250 mm away from a wall, then a decrement will
@@ -113,7 +115,7 @@ public class AddCheckpoints {
                     rotationAngle = (float)( (180/Math.PI) * Math.atan((correctedY - currentY) / (x - currentX)) );
                     mBase.clearCheckPointsAndStop();
                     mBase.addCheckPoint(x,correctedY);
-                    System.out.println("--------  " + "NEW y: " + correctedY + "With this rotation angle: " + rotationAngle + "  --------");
+                    System.out.println("--------  " + "NEW y: " + correctedY + "With this rotation angle: " + rotationAngle + " degrees  --------");
                 }
 
                 //Printing the distances.
@@ -144,7 +146,7 @@ public class AddCheckpoints {
 
                     @Override
                     public void onCheckPointMiss(CheckPoint checkPoint, Pose2D realPose, boolean isLast, int reason) {
-                    //driving = false?
+
                     }
                 });
 
@@ -153,14 +155,13 @@ public class AddCheckpoints {
                 //is detected less than 900mm away from Loomo, then Loomo will stop. It will wait
                 //for 3 seconds before either continuing the route, or exiting the while(driving)
                 //loop, and try to avoid the obstacle.
-                //TimerValue counts iteration, and 5000 iterations gives a fair time for the
+                //TimerValue counts iteration, and 3500 iterations gives a fair time for the
                 //obstacle to move.
                 // It is also possible to use Loomos camera to detect what the obstacle might be.
                 // If it is a human, for instance, Loomo could tell it to move out if its path.
                  if (mUltrasonicDistance < 900){
 
                      mBase.clearCheckPointsAndStop();
-                     obstacle = true;
                      boolean waitForObstacle = true;
                      timerValue = 0;
 
@@ -171,18 +172,18 @@ public class AddCheckpoints {
 
                         System.out.println("mUltrasonicDistance1:  " + mUltrasonicDistance1);
                         timerValue++;
-                        System.out.println("Timer value: " + timerValue);
+                        System.out.println("Timer value: " + "----------------" + timerValue);
 
-                        //If the obstacle moves, Loomo will add a checkpoint at the previous checkpoint
+                        //If the obstacle moves, Loomo will add a checkpoint at the previous
+                        //checkpoint ( x, correctedY )
                         if(mUltrasonicDistance1 > 900){
                             waitForObstacle = false;
-                            obstacle = false;
                             mBase.addCheckPoint(x,correctedY);
                         }
 
-                        else if (timerValue == 5000){
-                            driving = false;
+                        else if (timerValue == 3500){
                             obstacle = true;
+                            driving = false;
                             waitForObstacle = false;
                         }
                     }
@@ -190,7 +191,6 @@ public class AddCheckpoints {
             }
 
             if (obstacle) {
-                System.out.println("-----Starting avoidance-function-----");
                 obstacleAvoidance.avoid(mBase, mSensor, mHead, pose2D);
                 mBase.addCheckPoint(x,correctedY);
             }
