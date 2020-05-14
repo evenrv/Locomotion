@@ -37,10 +37,6 @@ public class AddCheckpoints {
         mBase.cleanOriginalPoint();
         Pose2D pose2D = mBase.getOdometryPose(-1);
         mBase.setOriginalPoint(pose2D);
-        pose2D.getX();
-
-        System.out.println("POSEx = : " + pose2D);
-
 
         //Iterating through both coordinate-lists and adding one checkpoint each iteration.
         //"driving" is set to true each iteration
@@ -92,7 +88,6 @@ public class AddCheckpoints {
                     float currentY = pose2D.getY();
 
                     rotationAngle = (float)( (180/Math.PI) * Math.atan((correctedY - currentY) / (x - currentX)) );
-                    mBase.clearCheckPointsAndStop();
                     mBase.addCheckPoint(x,correctedY);
                     System.out.println("--------  " + "NEW y: " + correctedY + "With this rotation angle: " + rotationAngle + " degrees  --------");
                 }
@@ -113,7 +108,6 @@ public class AddCheckpoints {
                     float currentY = pose2D.getY();
 
                     rotationAngle = (float)( (180/Math.PI) * Math.atan((correctedY - currentY) / (x - currentX)) );
-                    mBase.clearCheckPointsAndStop();
                     mBase.addCheckPoint(x,correctedY);
                     System.out.println("--------  " + "NEW y: " + correctedY + "With this rotation angle: " + rotationAngle + " degrees  --------");
                 }
@@ -187,12 +181,14 @@ public class AddCheckpoints {
                             waitForObstacle = false;
                         }
                     }
-                }
-            }
 
-            if (obstacle) {
-                obstacleAvoidance.avoid(mBase, mSensor, mHead, pose2D);
-                mBase.addCheckPoint(x,correctedY);
+                     if (obstacle) {
+                         System.out.println("Starting avoidance function");
+                         obstacleAvoidance.avoid(mBase, mSensor);
+                         mBase.clearCheckPointsAndStop();
+                         mBase.addCheckPoint(x,correctedY);
+                     }
+                }
             }
         }
     }
