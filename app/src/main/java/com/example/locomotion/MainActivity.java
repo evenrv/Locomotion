@@ -49,7 +49,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     Base mBase;
     Head mHead;
-    Drive checkpoint = new Drive();
     Sensor mSensor;
     Vision mVision;
 
@@ -257,8 +256,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
         if (parseInfo.room != null) {
             System.out.println(parseInfo.xcoords[1]);
-
+            Drive checkpoint = new Drive();
             checkpoint.drive(mBase, mSensor, parseInfo);
+
         } else {
             Snackbar.make(view, "Please enter a room first", Snackbar.LENGTH_SHORT)
                     .setAction("Action", null).show();
@@ -356,7 +356,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             floor = text;
         }
     }
-
 
     @Override
     public void onNothingSelected(AdapterView<?> parent) {

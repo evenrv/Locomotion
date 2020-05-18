@@ -4,7 +4,6 @@ import com.example.locomotion.Datatype.ParseInfo;
 import com.segway.robot.algo.Pose2D;
 import com.segway.robot.algo.minicontroller.CheckPoint;
 import com.segway.robot.algo.minicontroller.CheckPointStateListener;
-import com.segway.robot.sdk.locomotion.head.Head;
 import com.segway.robot.sdk.locomotion.sbv.Base;
 import com.segway.robot.sdk.perception.sensor.Sensor;
 import com.segway.robot.sdk.perception.sensor.SensorData;
@@ -18,9 +17,9 @@ public class Drive {
     private boolean driving;
     private boolean obstacle = false;
     private ObstacleAvoidance obstacleAvoidance = new ObstacleAvoidance();
-    float correctedY;
-    float rotationAngle;
-    int timerValue = 0;
+    private float correctedY;
+    private float rotationAngle;
+    private int timerValue = 0;
 
 
     //The function that adds checkpoints for Loomo
