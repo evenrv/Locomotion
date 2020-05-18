@@ -14,7 +14,6 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
-
 import com.example.locomotion.Datatype.ParseInfo;
 import com.example.locomotion.Driving.Drive;
 import com.example.locomotion.FindRoom.FindRoom;
@@ -28,11 +27,9 @@ import com.segway.robot.sdk.locomotion.sbv.Base;
 import com.segway.robot.sdk.perception.sensor.Sensor;
 import com.segway.robot.sdk.vision.Vision;
 
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.concurrent.ExecutionException;
-
 
 public class MainActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 
@@ -261,7 +258,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         if (parseInfo.room != null) {
             System.out.println(parseInfo.xcoords[1]);
 
-            checkpoint.drive(mBase, mSensor, mHead, parseInfo);
+            checkpoint.drive(mBase, mSensor, parseInfo);
         } else {
             Snackbar.make(view, "Please enter a room first", Snackbar.LENGTH_SHORT)
                     .setAction("Action", null).show();

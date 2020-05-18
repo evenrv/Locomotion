@@ -3,7 +3,6 @@ package com.example.locomotion.Driving;
 import com.segway.robot.algo.Pose2D;
 import com.segway.robot.algo.minicontroller.CheckPoint;
 import com.segway.robot.algo.minicontroller.CheckPointStateListener;
-import com.segway.robot.sdk.locomotion.head.Head;
 import com.segway.robot.sdk.locomotion.sbv.Base;
 import com.segway.robot.sdk.perception.sensor.Sensor;
 import com.segway.robot.sdk.perception.sensor.SensorData;
@@ -13,27 +12,18 @@ import java.util.Arrays;
 public class ObstacleAvoidance{
 
     boolean avoiding;
-    private float currentx;
-    private float currenty;
-    private float currentTheta;
     boolean goingLeft = false;
-
-    //Two float[][] arrays, each containing a route two drive around an obstacle
-    private float avoidanceListLeft[][] = {  {currentx, currenty + 1f},
-                                             {currentx + 2, currenty + 1f},
-                                             {currentx + 2, currenty}
-                                       };
-
-    private float avoidanceListRight[][] = {  {currentx, currenty - 1f},
-                                              {currentx + 2, currenty - 1f},
-                                              {currentx + 2, currenty}
-    };
-
 
 
 
     //Basic function for driving around the obstacle on the left side
-    private void goLeft(Base mBase){
+    private void goLeft(Base mBase, float currentx, float currenty){
+
+        //Float[][] array containing a route two drive around an obstacle
+        float avoidanceListLeft[][] = {  {currentx, currenty + 1f},
+                {currentx + 2, currenty + 1f},
+                {currentx + 2, currenty}
+        };
 
 
         for (int point = 0; point < 3; point++) {
@@ -63,7 +53,15 @@ public class ObstacleAvoidance{
     }
 
     //Basic function for driving around the obstacle on the right side
-    private void goRight(Base mBase){
+    private void goRight(Base mBase, float currentx, float currenty){
+
+
+        float avoidanceListRight[][] = {  {currentx, currenty - 1f},
+                {currentx + 2, currenty - 1f},
+                {currentx + 2, currenty}
+        };
+
+
         for (int point = 0; point < 3; point++) {
 
             mBase.addCheckPoint(avoidanceListRight[point][0], avoidanceListRight[point][1]);
@@ -89,25 +87,20 @@ public class ObstacleAvoidance{
         }
     }
 
-
     //Function for deciding what to do to avoid the obstacle
     public void avoid(Base mBase, Sensor mSensor) {
     mBase.setControlMode(Base.CONTROL_MODE_NAVIGATION);
 
-        Pose2D pose2D1 = mBase.getOdometryPose(-1);
+        //Fetching current pose
+        Pose2D Pose2D = mBase.getOdometryPose(-1);
 
         //Fetching the current position
-        currentx = pose2D1.getX();
-        currenty = pose2D1.getY();
-        currentTheta = pose2D1.getTheta();
-
-        System.out.println("current x: " + currentx);
-        System.out.println("current y: " + currenty);
-        System.out.println("current Theta: " + currentTheta);
+        float currentx = Pose2D.getX();
+        float currenty = Pose2D.getY();
+        float currentTheta = Pose2D.getTheta();
 
 
-
-        //Checking left side by rotating with an angle of PI/2 from the current angle.
+        //Checking left side by rotating with an angle of PI/4 from the current angle.
         //addCheckpoint is the method that rotates loomo
         //checkingLeft is true while Loomo rotates, and waits while timer counts to 2000
         //If the ultrasonic distance is more than 900, the goLeft function will be called to drive
@@ -129,7 +122,7 @@ public class ObstacleAvoidance{
             float mUltrasonicDistance = mUltrasonicData.getIntData()[0];
 
             if (mUltrasonicDistance > 1000){
-                goLeft(mBase);
+                goLeft(mBase, currentx, currenty);
                 checkingLeft = false;
                 goingLeft = true;
             }
@@ -142,7 +135,8 @@ public class ObstacleAvoidance{
         }
 
 
-        //Same program as for checking the left side.
+        //If Loomo cannot go left, it willcheck the right side. This part of the function will only
+        // be executed if going left is false. It's the same program as for checking the left side.
         //If Loomo cannot find a clear path, it will need to either parse a new route
         //or  ask for help
 
@@ -160,7 +154,7 @@ public class ObstacleAvoidance{
                 float mUltrasonicDistance = mUltrasonicData.getIntData()[0];
 
                 if (mUltrasonicDistance > 900){
-                    goRight(mBase);
+                    goRight(mBase, currentx, currenty);
                     checkingRight = false;
                 }
 

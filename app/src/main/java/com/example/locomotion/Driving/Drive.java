@@ -24,11 +24,10 @@ public class Drive {
 
 
     //The function that adds checkpoints for Loomo
-    public void drive(final Base mBase, Sensor mSensor, Head mHead, ParseInfo parseInfo){
+    public void drive(final Base mBase, Sensor mSensor, ParseInfo parseInfo){
 
 
         mBase.setControlMode(Base.CONTROL_MODE_NAVIGATION);
-
 
         double[] coordx = parseInfo.xcoords;
         double[] coordy = parseInfo.ycoords;
