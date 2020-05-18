@@ -118,20 +118,8 @@
         android:background="@drawable/buttonstyle"
         android:backgroundTint="#FB8375"
         android:onClick="getroom"
-        android:text="@string/fetch_room_id"
+        android:text="@string/find_path"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
-
-    <Button
-        android:id="@+id/getpath"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="2dp"
-        android:background="@drawable/buttonstyle"
-        android:backgroundTint="#FB8375"
-        android:onClick="getpath"
-        android:text="Get Path"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/button2" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

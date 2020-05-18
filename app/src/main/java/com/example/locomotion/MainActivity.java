@@ -1,7 +1,6 @@
 package com.example.locomotion;
 
 import android.app.Dialog;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -15,22 +14,14 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
-import com.example.locomotion.Datatype.ListInteger;
-import com.example.locomotion.Datatype.PathInfo;
-import com.example.locomotion.Datatype.RoomInfo;
+
+import com.example.locomotion.Datatype.ParseInfo;
 import com.example.locomotion.Driving.AddCheckpoints;
-import com.example.locomotion.Driving.ObstacleAvoidance;
 import com.example.locomotion.FindRoom.Find_Room;
-import com.example.locomotion.FindRoom.ParseRoom;
 import com.example.locomotion.Json.Create_Rooms;
-import com.example.locomotion.Json.JSONPath;
-import com.example.locomotion.Json.ParseJSON;
+import com.example.locomotion.Json.RouteFinder;
 import com.example.locomotion.Tools.Calibrate;
-import com.example.locomotion.Tools.Point_converter;
-import com.example.locomotion.Tools.RoomCenter;
-import com.example.locomotion.Tools.UrlMaker;
 import com.google.android.material.snackbar.Snackbar;
-import com.segway.robot.algo.Pose2D;
 import com.segway.robot.sdk.base.bind.ServiceBinder;
 import com.segway.robot.sdk.locomotion.head.Head;
 import com.segway.robot.sdk.locomotion.sbv.Base;
@@ -38,14 +29,9 @@ import com.segway.robot.sdk.perception.sensor.Sensor;
 import com.segway.robot.sdk.vision.Vision;
 
 
-import org.json.JSONException;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.ParseException;
-
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URL;
-import java.util.ArrayList;
+import java.util.concurrent.ExecutionException;
 
 
 public class MainActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
@@ -69,11 +55,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     AddCheckpoints checkpoint = new AddCheckpoints();
     Sensor mSensor;
     Vision mVision;
-    String urlPath;
-
-    Point_converter converter = new Point_converter();
-    double[][] output;
-    float angle;
 
     public Create_Rooms createrooms = new Create_Rooms();
     String[][] Room;
@@ -81,17 +62,11 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     public String[] roomNumber;
 
     public Find_Room findroom = new Find_Room();
-    String theRoom;
 
     String building;
     String floor;
 
-    Double[] CiscoCoords;
-    float metersperLongitude;
-    float metersperLatitude;
-
-    //Boolean for when loomo is ready to drive.
-    boolean ready = false;
+    ParseInfo parseInfo = new ParseInfo();
 
 
     @Override
@@ -101,8 +76,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         myDialog = new Dialog(this);
-
-
 
 
         //Fetching the rooms.txt document.
@@ -125,10 +98,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         //and RoomID as the second element of the Room array
         roomNumber = Room[0];
         RoomID = Room[1];
-
-
-
-
 
 
         //initializing the sensor instance and binding the service
@@ -204,11 +173,13 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
                 Calibrate calibrate = new Calibrate();
 
-                float [] calibinfo = calibrate.calibrate(mBase, mSensor);
-                angle = calibinfo[1];
-                metersperLongitude = calibinfo[1];
-                metersperLatitude = calibinfo[2];
+                float[] calibinfo = calibrate.calibrate(mBase, mSensor);
+
+                parseInfo.angle = calibinfo[0];
+                parseInfo.mPerLong = calibinfo[1];
+                parseInfo.mPerLat = calibinfo[2];
                 myDialog.dismiss();
+
             }
         });
 
@@ -224,7 +195,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     //When pressed, a popup will appear, equal to the pop up in the OnCreate function.
 
 
-    public void calibrate(View view){
+    public void calibrate(View view) {
         Button yesButton;
         Button noButton;
         myDialog.setContentView(R.layout.popup);
@@ -232,16 +203,19 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         noButton = myDialog.findViewById(R.id.NoButton);
         myDialog.show();
 
+
         yesButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
                 Calibrate calibrate = new Calibrate();
 
-                float [] calibinfo = calibrate.calibrate(mBase, mSensor);
-                angle = calibinfo[1];
-                metersperLongitude = calibinfo[1];
-                metersperLatitude = calibinfo[2];
+                float[] calibinfo = calibrate.calibrate(mBase, mSensor);
+
+                parseInfo.angle = calibinfo[0];
+                parseInfo.mPerLong = calibinfo[1];
+                parseInfo.mPerLat = calibinfo[2];
+
                 myDialog.dismiss();
             }
         });
@@ -257,7 +231,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     //When pressing the Start Navigation button (id: changeview), select_room_page will open.
     //Two spinners are created
-    public void startnavigation(View view){
+    public void startnavigation(View view) {
 
         setContentView(R.layout.select_room_page);
 
@@ -277,44 +251,19 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     }
 
-    //The function to the GetPath button. This function calls the asynctask Getroute,
-    // and finds a route based on previous inputs. The boolean ready is true when this is ran,
-    // but only if a valid room is selected. Ready is returned.
-    public void getpath(View view){
-
-
-        if (theRoom != null) {
-          new Getroute().execute();
-          ready = true;
-
-            Snackbar.make(view, "Finding a path to your room", Snackbar.LENGTH_SHORT)
-                    .setAction("Action", null).show();
-        }
-
-
-        else {
-            Snackbar.make(view, "Please enter a valid room first", Snackbar.LENGTH_SHORT)
-                    .setAction("Action", null).show();
-            ready = false;
-        }
-
-    }
-
 
     //Drives Loomo by sending in the previously made coordinate arrays.
     //The function starts driving loomo by running the "drive"-function from the AddCheckpoints
-    //class if a valid room number is entered and a path is found. The boolean ready is set to true
-    //after parsing a route and theRoom = null if the roomnumber is invalid.
+    //class if a valid room number is entered and a path is found.
     //If theRoom == 0, then a snackbar will appear, telling the user to  enter a room.
 
     public void navigate(View view) {
 
-        if (theRoom != null && ready) {
+        if (parseInfo.room != null) {
+            System.out.println(parseInfo.xcoords[1]);
 
-            checkpoint.drive(mBase, mSensor, mHead, output);
-        }
-
-        else{
+            checkpoint.drive(mBase, mSensor, mHead, parseInfo);
+        } else {
             Snackbar.make(view, "Please enter a room first", Snackbar.LENGTH_SHORT)
                     .setAction("Action", null).show();
         }
@@ -326,21 +275,21 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     // The find the center of the selected room, and use these
     //coordinates as well as the cisco output for Loomos location to create the urlPath string.
 
-    public void getroom(View view){
+    public void getroom(View view) throws ExecutionException, InterruptedException {
 
         TextView room = findViewById(R.id.roomNumber);
         String userInput = room.getText().toString();
 
-        theRoom = findroom.FindRoomID(RoomID, roomNumber, userInput, building, floor);
+        parseInfo.room = findroom.FindRoomID(RoomID, roomNumber, userInput, building, floor);
 
-        if (theRoom == null) {
+
+        if (parseInfo.room == null) {
             Snackbar.make(view, "The entered room does not exist. Please try another room", Snackbar.LENGTH_SHORT)
                     .setAction("Action", null).show();
-        }
+        } else {
+            // ParseInfo parseInfo1 = new ParseInfo();
+            parseInfo = new RouteFinder().execute(parseInfo).get();
 
-        else {
-
-            new GetRoom().execute();
 
             Snackbar.make(view, "Finding the location of the entered room", Snackbar.LENGTH_SHORT)
                     .setAction("Action", null).show();
@@ -351,17 +300,16 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     //If the questionmark-button is pressed, then a new layout will appear,
     // explaining how the application works
     //mtitlewindow will contain the title, and minstructions will contain the instruction text.
-    public void questions(View view){
-
+    public void questions(View view) {
 
 
         setContentView(R.layout.questions);
         TextView mtitlewindow = findViewById(R.id.titlewindow);
-        TextView minstructions =findViewById(R.id.instructions);
+        TextView minstructions = findViewById(R.id.instructions);
 
         //Importing resource string instructionsHeader and instructions
         mtitlewindow.setText(getResources().getString(R.string.instructionsHeader));
-        StringBuilder stringBuilder= new StringBuilder();
+        StringBuilder stringBuilder = new StringBuilder();
         String melding = getResources().getString(R.string.instructions);
 
         stringBuilder.append(melding);
@@ -370,7 +318,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     }
 
-    public void gohome(View view){
+    public void gohome(View view) {
         setContentView(R.layout.activity_main);
     }
 
@@ -398,7 +346,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     }
 
 
-
     //This listener fetches the chosen values from the spinboxes, and assigns the values
     // to "building" and "floor".
     @Override
@@ -407,13 +354,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         String text = parent.getItemAtPosition(position).toString();
 
 
-        if(parent.getId() == R.id.selectBuilding)
-        {
+        if (parent.getId() == R.id.selectBuilding) {
             building = text;
-        }
-
-        else if (parent.getId() == R.id.selectFloor)
-        {
+        } else if (parent.getId() == R.id.selectFloor) {
             floor = text;
         }
     }
@@ -421,70 +364,5 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     @Override
     public void onNothingSelected(AdapterView<?> parent) {
-    }
-
-
-
-    private class GetRoom extends AsyncTask<URL, ListInteger, RoomInfo>
-    {
-        @Override
-        protected RoomInfo doInBackground(URL... urls) {
-
-            String url = ParseRoom.setUrl(theRoom);
-            RoomInfo roomInfo;
-
-            //This function downloads the roominformation and stores it as a json object.
-            roomInfo = ParseRoom.roomCoor(url);
-
-
-            return roomInfo;
-        }
-
-        protected void onPostExecute(RoomInfo roomInfo) {
-
-
-            // calculates "center" of room based on the coordinates of the corners
-            Double[] avgCoord = RoomCenter.calculateAvg(roomInfo.coords);
-
-            System.out.println("Center of Room: " + avgCoord[0] + " " + avgCoord[1] + ", at floor: " + roomInfo.z);
-
-            UrlMaker urlMaker = new UrlMaker();
-            //CiscoPos ciscoPos = new CiscoPos(); --> currentCoords + muligens current_z her
-            CiscoCoords = new Double[]{8.576590048403403, 58.33423511424411};
-
-            urlPath = urlMaker.makeUrl(CiscoCoords, 2.0, avgCoord, roomInfo.z);
-
-        }
-    }
-
-
-    private class Getroute extends AsyncTask<URL, ListInteger, PathInfo> {
-        @Override
-        protected PathInfo doInBackground(URL... urls) {
-
-            JSONObject jsonObjectPath;
-            PathInfo pathInfo = new PathInfo();
-                try {
-                    jsonObjectPath = ParseJSON.readJsonFromUrl(urlPath);
-                    pathInfo = JSONPath.pathData(jsonObjectPath);
-
-
-                } catch (IOException | ParseException | JSONException e) {
-                    e.printStackTrace();
-                }
-
-
-            return pathInfo;
-        }
-
-
-        protected void onPostExecute(PathInfo pathInfo) {
-
-
-                ArrayList<Double[]> checkPoints = (PathInfo.coordinateArray);
-                ArrayList<Integer> indexes = (PathInfo.flagIndexes);
-
-                output = converter.convert(checkPoints, CiscoCoords, angle, metersperLongitude, metersperLatitude);
-        }
     }
 }

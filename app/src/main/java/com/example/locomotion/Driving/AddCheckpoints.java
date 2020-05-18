@@ -1,5 +1,6 @@
 package com.example.locomotion.Driving;
 
+import com.example.locomotion.Datatype.ParseInfo;
 import com.example.locomotion.R;
 import com.segway.robot.algo.Pose2D;
 import com.segway.robot.algo.minicontroller.CheckPoint;
@@ -24,13 +25,14 @@ public class AddCheckpoints {
 
 
     //The function that adds checkpoints for Loomo
-    public void drive(final Base mBase, Sensor mSensor, Head mHead, double[][] output){
+    public void drive(final Base mBase, Sensor mSensor, Head mHead, ParseInfo parseInfo){
 
 
         mBase.setControlMode(Base.CONTROL_MODE_NAVIGATION);
 
-        double[] coordx = output[0];
-        double[] coordy = output[1];
+
+        double[] coordx = parseInfo.xcoords;
+        double[] coordy = parseInfo.ycoords;
 
 
         //Activating mBase to control Loomo
@@ -45,11 +47,10 @@ public class AddCheckpoints {
 
 
             //x and y are the coordinates that will be used in mBase.addcheckPoint.
-            /*float x = (float) coordx[i];
-            float y = (float) coordy[i];*/
+            float x = (float) coordx[i];
+            float y = (float) coordy[i];
 
-            float x = (float) 2.0;
-            float y = (float) 0;
+
             mBase.addCheckPoint(x, y);
             correctedY = y;
             driving = true;
@@ -128,7 +129,7 @@ public class AddCheckpoints {
 
                         /*if (elevator at (x,y)){
                         
-                        Elevator elevator = new Elevator();
+                        Elevator elevator = new Elevator(parseInfo);
 
                         elevator.useElevator(mBase);
 

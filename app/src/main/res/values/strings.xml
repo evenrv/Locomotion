@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">locomotion</string>
     <string name="action_settings">Settings</string>
-    <string name="fetch_room_id">Fetch Room ID</string>
+    <string name="find_path">Find path to room</string>
     <string name="calibrate">Do you want to calibrate Loomo now?</string>
 
     <string-array name = "selectBuilding">

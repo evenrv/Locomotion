@@ -1,20 +1,20 @@
 package com.example.locomotion.Tools;
-import com.segway.robot.sdk.vision.Vision;
-
+import com.example.locomotion.Datatype.ParseInfo;
 import java.util.ArrayList;
 public class Point_converter {
 
 
+    public double[][] convert(ArrayList<Double[]> checkPoints, Double[] CiscoCoords, ParseInfo parseInfo){
 
-
-    public double[][] convert(ArrayList<Double[]> checkPoints, Double[] CiscoCoords, float angle, float metersperlongitude, float metersperlatitude){
+        float metersperlongitude = parseInfo.mPerLong;
+        float metersperlatitude = parseInfo.mPerLat;
+        float angle = parseInfo.angle;
 
         double[] xcoords = new double[checkPoints.size()];
         double[] ycoords = new double[checkPoints.size()];
 
 
         for (int position = 0;position< checkPoints.size(); position++) {
-
 
             //Creating a new point, which will be the same point as fetched from the url,
             // but from loomos local reference frame. These points are also multiplied with
@@ -52,10 +52,6 @@ public class Point_converter {
 
             xcoords[position] =  singleTransformedCheckpoint[0];
             ycoords[position] =  singleTransformedCheckpoint[1];
-
-
-           System.out.println("Transformed x: " + xcoords[position]);
-           System.out.println("Transformed y: " + ycoords[position]);
         }
 
         double[][] output = {xcoords,ycoords};

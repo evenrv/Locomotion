@@ -12,14 +12,12 @@ import static java.lang.StrictMath.PI;
 import static java.lang.StrictMath.acos;
 import static java.lang.StrictMath.sqrt;
 
-public class Calibrate {
 
+public class Calibrate {
 
     //This function will calibrate Loomos local coordinate-system with the global coordinate system.
     //It returns a float, which will be the degree that the Loomo has to rotate with, in order to
     //align the coordinate systems.
-
-
 
 
     public float[]  calibrate(Base mBase, Sensor mSensor) {
@@ -39,6 +37,7 @@ public class Calibrate {
         float ciscoLat = (float) 58.33452693486112;
 
 
+        //Converting to radians because java.lang.Math.cos uses radians.
         float ciscoLat1 = (float) (ciscoLat * (PI / 180));
 
 
