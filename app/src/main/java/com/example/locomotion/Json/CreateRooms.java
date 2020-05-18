@@ -8,7 +8,7 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 
 
-public class Create_Rooms {
+public class CreateRooms {
 
     public String[][] createarrays(InputStream input) throws IOException {
 

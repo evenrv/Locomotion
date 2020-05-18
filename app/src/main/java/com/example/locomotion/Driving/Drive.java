@@ -1,7 +1,6 @@
 package com.example.locomotion.Driving;
 
 import com.example.locomotion.Datatype.ParseInfo;
-import com.example.locomotion.R;
 import com.segway.robot.algo.Pose2D;
 import com.segway.robot.algo.minicontroller.CheckPoint;
 import com.segway.robot.algo.minicontroller.CheckPointStateListener;
@@ -11,7 +10,7 @@ import com.segway.robot.sdk.perception.sensor.Sensor;
 import com.segway.robot.sdk.perception.sensor.SensorData;
 import java.util.Arrays;
 
-public class AddCheckpoints {
+public class Drive {
 
     // Creating objects to control the base and the sensors of Loomo. Creates checkpoint object to
     // add checkpoints later, and new_url object to create an  URL.

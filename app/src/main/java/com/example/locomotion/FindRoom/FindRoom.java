@@ -1,7 +1,7 @@
 package com.example.locomotion.FindRoom;
 
 
-public class Find_Room {
+public class FindRoom {
 
 
     String TheRoom;

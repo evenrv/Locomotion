@@ -16,9 +16,9 @@ import androidx.appcompat.widget.Toolbar;
 
 
 import com.example.locomotion.Datatype.ParseInfo;
-import com.example.locomotion.Driving.AddCheckpoints;
-import com.example.locomotion.FindRoom.Find_Room;
-import com.example.locomotion.Json.Create_Rooms;
+import com.example.locomotion.Driving.Drive;
+import com.example.locomotion.FindRoom.FindRoom;
+import com.example.locomotion.Json.CreateRooms;
 import com.example.locomotion.Json.RouteFinder;
 import com.example.locomotion.Tools.Calibrate;
 import com.google.android.material.snackbar.Snackbar;
@@ -52,16 +52,16 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     Base mBase;
     Head mHead;
-    AddCheckpoints checkpoint = new AddCheckpoints();
+    Drive checkpoint = new Drive();
     Sensor mSensor;
     Vision mVision;
 
-    public Create_Rooms createrooms = new Create_Rooms();
+    public CreateRooms createrooms = new CreateRooms();
     String[][] Room;
     public String[] RoomID;
     public String[] roomNumber;
 
-    public Find_Room findroom = new Find_Room();
+    public FindRoom findroom = new FindRoom();
 
     String building;
     String floor;
@@ -215,7 +215,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 parseInfo.angle = calibinfo[0];
                 parseInfo.mPerLong = calibinfo[1];
                 parseInfo.mPerLat = calibinfo[2];
-
                 myDialog.dismiss();
             }
         });
@@ -253,7 +252,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
 
     //Drives Loomo by sending in the previously made coordinate arrays.
-    //The function starts driving loomo by running the "drive"-function from the AddCheckpoints
+    //The function starts driving loomo by running the "drive"-function from the Drive
     //class if a valid room number is entered and a path is found.
     //If theRoom == 0, then a snackbar will appear, telling the user to  enter a room.
 
@@ -287,7 +286,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             Snackbar.make(view, "The entered room does not exist. Please try another room", Snackbar.LENGTH_SHORT)
                     .setAction("Action", null).show();
         } else {
-            // ParseInfo parseInfo1 = new ParseInfo();
+
             parseInfo = new RouteFinder().execute(parseInfo).get();
 
 

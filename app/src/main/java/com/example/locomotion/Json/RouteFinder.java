@@ -6,7 +6,7 @@ import com.example.locomotion.Datatype.ParseInfo;
 import com.example.locomotion.Datatype.PathInfo;
 import com.example.locomotion.Datatype.RoomInfo;
 import com.example.locomotion.FindRoom.ParseRoom;
-import com.example.locomotion.Tools.Point_converter;
+import com.example.locomotion.Tools.PointConverter;
 import com.example.locomotion.Tools.RoomCenter;
 import com.example.locomotion.Tools.UrlMaker;
 
@@ -69,7 +69,7 @@ public class RouteFinder extends AsyncTask<ParseInfo, Void, ParseInfo>   {
             ArrayList<Double[]> checkPoints = (pathInfo.coordinateArray);
             ArrayList<Integer> indexes = (PathInfo.flagIndexes);
 
-            Point_converter converter = new Point_converter();
+            PointConverter converter = new PointConverter();
             double[][] output;
             output = converter.convert(checkPoints, ciscoCoords, parseInfo);
 

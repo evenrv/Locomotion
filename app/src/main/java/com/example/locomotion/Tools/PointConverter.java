@@ -1,7 +1,7 @@
 package com.example.locomotion.Tools;
 import com.example.locomotion.Datatype.ParseInfo;
 import java.util.ArrayList;
-public class Point_converter {
+public class PointConverter {
 
 
     public double[][] convert(ArrayList<Double[]> checkPoints, Double[] CiscoCoords, ParseInfo parseInfo){
