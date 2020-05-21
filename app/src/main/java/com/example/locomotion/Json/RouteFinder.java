@@ -45,9 +45,9 @@ public class RouteFinder extends AsyncTask<ParseInfo, Void, ParseInfo>   {
             Double[] ciscoCoords;
 
             //CiscoPos ciscoPos = new CiscoPos(); --> currentCoords + muligens current_z her
-            ciscoCoords = new Double[]{8.576590048403403, 58.33423511424411};
+            ciscoCoords = new Double[]{8.576590048403403, 58.33423511424411, 2.0};
             String urlPath;
-            urlPath = urlMaker.makeUrl(ciscoCoords, 2.0, avgCoord, roomInfo.z);
+            urlPath = urlMaker.makeUrl(ciscoCoords, avgCoord, roomInfo.z);
 
 
 

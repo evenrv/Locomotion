@@ -15,34 +15,13 @@ public class JSONPath {
 
     public static ArrayList<Integer> elevatorIndex = new ArrayList<>(); // marks elements which enter Elevator
     public static ArrayList<Double[]> coordinateArr = new ArrayList<>();
-    static ParseJSON parseJson = new ParseJSON();
+    private static ParseJSON parseJson = new ParseJSON();
 
     //   public static void main(String args[]) throws IOException, ParseException, JSONException {    }
     public static JSONObject parseURL(String url) throws JSONException, ParseException, IOException {
         JSONObject jsonObject = parseJson.readJsonFromUrl(url);
         return jsonObject;
     }
-    /*
-    public static void printCoordinates(ArrayList<Double[]> coordinateArr, ArrayList<Integer> elevatorIndex) {
-        for (int i = 0, cnt = 0; i < coordinateArr.size(); i++) {
-
-
-            try {
-                System.out.println(coordinateArr.get(i)[0]);
-                System.out.println(coordinateArr.get(i)[1]);
-                System.out.println(i);
-                if (elevatorIndex.get(cnt) == i && cnt < elevatorIndex.size()) {
-                    System.out.println("elevator @" + i);
-                    cnt++;
-                }
-            }
-             catch(IndexOutOfBoundsException e){
-                    System.out.println(coordinateArr.get(i)[0]);
-                    System.out.println(coordinateArr.get(i)[1]);
-                    System.out.println(i);
-                }
-            }
-        }*/
 
 
     public static PathInfo pathData (JSONObject jsonObject)
@@ -65,13 +44,13 @@ public class JSONPath {
                 Double[] xy_1 = {(Double) temp_1.get(0), (Double) temp_1.get(1)};
 
                 if (i == 0) {
-                    if (elevator == true) {           // adds index of coordinate-pair to enter Elevator into elevatorIndex
+                    if (elevator) {           // adds index of coordinate-pair to enter Elevator into elevatorIndex
                         pathInfo.flagIndexes.add(i + 1);
                     }
                     PathInfo.coordinateArray.add(xy_0);
                     PathInfo.coordinateArray.add(xy_1);
                 } else {
-                    if (elevator == true) {           // adds index of coordinate-pair to enter Elevator into elevatorIndex
+                    if (elevator) {           // adds index of coordinate-pair to enter Elevator into elevatorIndex
                         pathInfo.flagIndexes.add(i + 1);
                     }
                     PathInfo.coordinateArray.add(xy_1);
@@ -89,7 +68,7 @@ public class JSONPath {
         // printCoordinates(pathInfo.coordinateArray, pathInfo.flagIndexes);
         return pathInfo;                                                        // returns instance of pathInfo-class
     }
-    public static void printIndex (ArrayList< Integer > flagIndex) {
+    private static void printIndex (ArrayList< Integer > flagIndex) {
         for (int jj = 0; jj < flagIndex.size(); jj++) {
 
         }

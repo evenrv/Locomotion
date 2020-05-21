@@ -287,7 +287,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             parseInfo = new RouteFinder().execute(parseInfo).get();
 
 
-            Snackbar.make(view, "Finding the location of the entered room", Snackbar.LENGTH_SHORT)
+            Snackbar.make(view, "Finding a path to your room", Snackbar.LENGTH_SHORT)
                     .setAction("Action", null).show();
         }
     }
