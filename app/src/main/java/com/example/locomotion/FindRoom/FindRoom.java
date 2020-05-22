@@ -19,9 +19,6 @@ public class FindRoom {
         else if (userInput.length() == 3){
             roomNumber = userInput;
         }
-        else{
-
-        }
 
         //Creating the final room number, based on the input from the spinners, and the user input.
         room = (building + floor + " " + roomNumber);

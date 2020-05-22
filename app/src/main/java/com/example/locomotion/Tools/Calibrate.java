@@ -1,6 +1,5 @@
 package com.example.locomotion.Tools;
 
-import com.segway.robot.algo.Pose2D;
 import com.segway.robot.sdk.locomotion.sbv.Base;
 import com.segway.robot.sdk.perception.sensor.Sensor;
 import com.segway.robot.sdk.perception.sensor.SensorData;
@@ -24,8 +23,6 @@ public class Calibrate {
 
 
         SensorData mPose2DData = mSensor.querySensorData(Arrays.asList(Sensor.POSE_2D)).get(0);
-        Pose2D pose2D1 = mSensor.sensorDataToPose2D(mPose2DData);
-
 
         //Fetching the cisco position for the robot, which returns
         // CiscoPositionDegx and CiscoPositionDegy

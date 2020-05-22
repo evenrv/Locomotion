@@ -23,7 +23,7 @@ public class Elevator extends AppCompatActivity{
         mBase.setControlMode(Base.CONTROL_MODE_FOLLOW_TARGET);
         parseInfo = new RouteFinder().execute(parseInfo).get();
 
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.front_page);
         //When button is pressed: Routefinder.findRoute(parseInfo);
 
 
