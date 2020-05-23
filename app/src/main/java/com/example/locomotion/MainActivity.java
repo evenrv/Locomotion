@@ -20,6 +20,9 @@ import com.example.locomotion.FindRoom.FindRoom;
 import com.example.locomotion.Json.CreateRooms;
 import com.example.locomotion.Json.RouteFinder;
 import com.example.locomotion.Tools.Calibrate;
+import com.example.locomotion.Tools.CISCO.Cisco;
+import com.example.locomotion.Tools.CISCO.CiscoArr;
+import com.example.locomotion.Tools.CISCO.CiscoInfo;
 import com.google.android.material.snackbar.Snackbar;
 import com.segway.robot.sdk.base.bind.ServiceBinder;
 import com.segway.robot.sdk.locomotion.head.Head;
@@ -29,6 +32,7 @@ import com.segway.robot.sdk.vision.Vision;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 
 public class MainActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
@@ -47,10 +51,19 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     Dialog myDialog;
 
-    Base mBase;
-    Head mHead;
-    Sensor mSensor;
-    Vision mVision;
+    // Create array of CiscoArr-class
+    ArrayList<CiscoArr> ciscoArr= new ArrayList<>();
+
+
+
+    Cisco cisco;
+
+
+    // make instances of Loomo public
+    public Base mBase;
+    public Head mHead;
+    public Sensor mSensor;
+    public Vision mVision;
 
     public CreateRooms createrooms = new CreateRooms();
     String[][] Room;
@@ -83,10 +96,19 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         // roomNumbers in the other. This means each element i in the ID array will fit each element
         //i in the roomNumbers array
         try {
+            Cisco cisco = new Cisco();
+            CiscoInfo ciscoInfo = new CiscoInfo();
+            String stringUrl = "https://cmx.uia.no/api/location/v1/clients/f4:4d:30:c3:18:07";
+
+            ciscoArr.add(0, cisco.execute(stringUrl).get());
 
             Room = createrooms.createarrays(input);
 
         } catch (IOException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
             e.printStackTrace();
         }
 
@@ -95,7 +117,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         roomNumber = Room[0];
         RoomID = Room[1];
 
-
+        //TODO: Vi bør legge alt dette i en egen klasse, feks ved oppstart, og
         //initializing the sensor instance and binding the service
         mSensor = Sensor.getInstance();
         mSensor.bindService(getApplicationContext(), new ServiceBinder.BindStateListener() {
@@ -149,6 +171,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
             }
         });
+        //TODO: Vi bør legge alt dette i en egen klasse
+
 
         //Loomo needs to be calibrated first thing after startup.
         // A popup will appear, and asks if you want to calibrate Loomo now.
