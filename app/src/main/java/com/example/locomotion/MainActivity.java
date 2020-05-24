@@ -81,7 +81,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.front_page);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         myDialog = new Dialog(this);
@@ -339,7 +339,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     }
 
     public void gohome(View view) {
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.front_page);
     }
 
     @Override

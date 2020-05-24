@@ -92,12 +92,12 @@ public class ObstacleAvoidance{
     mBase.setControlMode(Base.CONTROL_MODE_NAVIGATION);
 
         //Fetching current pose
-        Pose2D Pose2D = mBase.getOdometryPose(-1);
+        Pose2D pose2D = mBase.getOdometryPose(-1);
 
         //Fetching the current position
-        float currentx = Pose2D.getX();
-        float currenty = Pose2D.getY();
-        float currentTheta = Pose2D.getTheta();
+        float currentx = pose2D.getX();
+        float currenty = pose2D.getY();
+        float currentTheta = pose2D.getTheta();
 
 
         //Checking left side by rotating with an angle of PI/4 from the current angle.
