@@ -6,6 +6,11 @@ import com.segway.robot.algo.minicontroller.CheckPointStateListener;
 import com.segway.robot.sdk.locomotion.sbv.Base;
 import com.segway.robot.sdk.perception.sensor.Sensor;
 import com.segway.robot.sdk.perception.sensor.SensorData;
+import static java.lang.Math.cos;
+import static java.lang.Math.sin;
+import static java.lang.StrictMath.PI;
+import static java.lang.StrictMath.acos;
+import static java.lang.StrictMath.sqrt;
 
 import java.util.Arrays;
 
@@ -17,18 +22,27 @@ public class ObstacleAvoidance{
 
 
     //Basic function for driving around the obstacle on the left side
-    private void goLeft(Base mBase, float currentx, float currenty){
+    private void goLeft(Base mBase, float currentx, float currenty, float currentTheta){
+
+        float stepOneX  = (float) cos(currentTheta + PI/2); 
+        float stepOneY = (float) sin(currentTheta + PI/2);
+       
+        float stepTwoX  = (float) cos(currentTheta);
+        float stepTwoY = (float) sin(currentTheta);
+        
+        float stepThreeX  = (float) cos(currentTheta - PI/2);
+        float stepThreeY = (float) sin(currentTheta - PI/2);
+
 
         //Float[][] array containing a route two drive around an obstacle
-        float avoidanceListLeft[][] = {  {currentx, currenty + 1f},
-                {currentx + 2, currenty + 1f},
-                {currentx + 2, currenty}
+        float avoidanceList[][] = {  {stepOneX, stepOneY},
+                {stepTwoX, stepTwoY},
+                {stepThreeX, stepThreeY}
         };
 
 
         for (int point = 0; point < 3; point++) {
-            mBase.addCheckPoint(avoidanceListLeft[point][0], avoidanceListLeft[point][1]);
-            System.out.println("--------________------- Point: " + point);
+            mBase.addCheckPoint(avoidanceList[point][0], avoidanceList[point][1]);
 
             avoiding = true;
 
@@ -53,19 +67,27 @@ public class ObstacleAvoidance{
     }
 
     //Basic function for driving around the obstacle on the right side
-    private void goRight(Base mBase, float currentx, float currenty){
+    private void goRight(Base mBase, float currentx, float currenty, float currentTheta){
+
+        float stepOneX  = (float) cos(currentTheta - PI/2);
+        float stepOneY = (float) sin(currentTheta - PI/2);
+
+        float stepTwoX  = (float) cos(currentTheta);
+        float stepTwoY = (float) sin(currentTheta);
+
+        float stepThreeX  = (float) cos(currentTheta + PI/2);
+        float stepThreeY = (float) sin(currentTheta + PI/2);
 
 
-        float avoidanceListRight[][] = {  {currentx, currenty - 1f},
-                {currentx + 2, currenty - 1f},
-                {currentx + 2, currenty}
+        float avoidanceList[][] = {  {stepOneX, stepOneY},
+                {stepTwoX, stepTwoY},
+                {stepThreeX, stepThreeY}
         };
 
 
         for (int point = 0; point < 3; point++) {
 
-            mBase.addCheckPoint(avoidanceListRight[point][0], avoidanceListRight[point][1]);
-            System.out.println("--------________------- Point: " + point);
+            mBase.addCheckPoint(avoidanceList[point][0], avoidanceList[point][1]);
 
             avoiding = true;
 
@@ -122,7 +144,7 @@ public class ObstacleAvoidance{
             float mUltrasonicDistance = mUltrasonicData.getIntData()[0];
 
             if (mUltrasonicDistance > 1000){
-                goLeft(mBase, currentx, currenty);
+                goLeft(mBase, currentx, currenty, currentTheta);
                 checkingLeft = false;
                 goingLeft = true;
             }
@@ -154,7 +176,7 @@ public class ObstacleAvoidance{
                 float mUltrasonicDistance = mUltrasonicData.getIntData()[0];
 
                 if (mUltrasonicDistance > 900){
-                    goRight(mBase, currentx, currenty);
+                    goRight(mBase, currentx, currenty, currentTheta);
                     checkingRight = false;
                 }
 

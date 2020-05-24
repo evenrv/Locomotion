@@ -35,14 +35,14 @@ public class Calibrate {
 
 
         //Converting to radians because java.lang.Math.cos uses radians.
-        float ciscoLat1 = (float) (ciscoLat * (PI / 180));
+        float ciscoLatRad = (float) (ciscoLat * (PI / 180));
 
 
         // calculating meters per degree longitude in longitude and latitude directions.
-        final double metersPerLatitude =  111132.92 - 559.82*cos(2* ciscoLat1) + 1.175 * cos(4 * ciscoLat1 - 0.0023 * cos(6*ciscoLat1));
+        final double metersPerLatitude =  111132.92 - 559.82*cos(2* ciscoLatRad) + 1.175 * cos(4 * ciscoLatRad - 0.0023 * cos(6*ciscoLatRad));
 
         //((PI/180)*OriginCiscoPositiony) is for converting degrees to radians.
-        final double metersPerLongitude =  111412.84 * cos(ciscoLat1) - 93.5 * cos(3 * ciscoLat1) + 0.118 * cos(5 * ciscoLat1);
+        final double metersPerLongitude =  111412.84 * cos(ciscoLatRad) - 93.5 * cos(3 * ciscoLatRad) + 0.118 * cos(5 * ciscoLatRad);
 
         System.out.println("metersPerLatitude: " + metersPerLatitude + "\n" + "metersperlongitude: " + metersPerLongitude);
 
