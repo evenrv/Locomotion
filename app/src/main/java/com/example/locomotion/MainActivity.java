@@ -1,6 +1,7 @@
 package com.example.locomotion;
 
 import android.app.Dialog;
+import android.content.Context;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -19,12 +20,12 @@ import com.example.locomotion.Driving.Drive;
 import com.example.locomotion.FindRoom.FindRoom;
 import com.example.locomotion.Json.CreateRooms;
 import com.example.locomotion.Json.RouteFinder;
+import com.example.locomotion.Tools.Binders;
 import com.example.locomotion.Tools.Calibrate;
 import com.example.locomotion.Tools.CISCO.Cisco;
 import com.example.locomotion.Tools.CISCO.CiscoArr;
 import com.example.locomotion.Tools.CISCO.CiscoInfo;
 import com.google.android.material.snackbar.Snackbar;
-import com.segway.robot.sdk.base.bind.ServiceBinder;
 import com.segway.robot.sdk.locomotion.head.Head;
 import com.segway.robot.sdk.locomotion.sbv.Base;
 import com.segway.robot.sdk.perception.sensor.Sensor;
@@ -60,15 +61,18 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
 
     // make instances of Loomo public
-    public Base mBase;
-    public Head mHead;
-    public Sensor mSensor;
-    public Vision mVision;
-
+    public Base mBase = Base.getInstance();
+    public Head mHead = Head.getInstance();
+    public Sensor mSensor = Sensor.getInstance();
+    public Vision mVision = Vision.getInstance();
+    public Context context = this.getApplicationContext();
     public CreateRooms createrooms = new CreateRooms();
     String[][] Room;
     public String[] RoomID;
     public String[] roomNumber;
+
+    Binders binders = new Binders();
+
 
     public FindRoom findroom = new FindRoom();
 
@@ -80,6 +84,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+        binders.bindAll();  // bind head, base, vision and sensor
+        binders.bindBase();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.front_page);
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -116,8 +123,10 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         //and RoomID as the second element of the Room array
         roomNumber = Room[0];
         RoomID = Room[1];
+        mSensor = Sensor.getInstance();
 
         //TODO: Vi bør legge alt dette i en egen klasse, feks ved oppstart, og
+/*
         //initializing the sensor instance and binding the service
         mSensor = Sensor.getInstance();
         mSensor.bindService(getApplicationContext(), new ServiceBinder.BindStateListener() {
@@ -171,6 +180,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
             }
         });
+ */
         //TODO: Vi bør legge alt dette i en egen klasse
 
 

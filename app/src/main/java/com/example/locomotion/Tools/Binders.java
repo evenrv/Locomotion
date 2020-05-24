@@ -1,115 +1,96 @@
 package com.example.locomotion.Tools;
 
 import android.content.Context;
-import android.view.View;
-import androidx.appcompat.app.AppCompatActivity;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.segway.robot.algo.PoseVLS;
-import com.segway.robot.algo.VLSPoseListener;
+
+import com.example.locomotion.MainActivity;
 import com.segway.robot.sdk.base.bind.ServiceBinder;
+import com.segway.robot.sdk.locomotion.head.Head;
 import com.segway.robot.sdk.locomotion.sbv.Base;
-import com.segway.robot.sdk.locomotion.sbv.StartVLSListener;
 import com.segway.robot.sdk.perception.sensor.Sensor;
-import com.segway.robot.sdk.perception.sensor.SensorData;
-import java.io.IOException;
-import java.util.Arrays;
-public class Binders extends AppCompatActivity {
+import com.segway.robot.sdk.vision.Vision;
+
+public class Binders {
+    //initializing the sensor instance and binding the service
+    public Sensor mSensor;
     public Base mBase;
-    public void bindOdomTarget(){
-        mBase.bindService(this.getApplicationContext(), new ServiceBinder.BindStateListener() {
-            @Override
-            public void onBind() {
-                        System.out.println("onbind called");
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        mBase.setControlMode(Base.CONTROL_MODE_FOLLOW_TARGET);
-                        mBase.setNavigationDataSource(Base.NAVIGATION_SOURCE_TYPE_ODOM);
-                    }
-                });
-            }
-            @Override
-            public void onUnbind(String reason) {
-            }
-        });
+    public Head mHead;
+    public Vision mVision;
+    public Context context;
+
+
+    // Called at startup
+    public void bindAll(){
+        bindBase();
+        bindHead();
+        bindSensor();
+        bindVision();
     }
-    public void bindOdomRaw(){
-        mBase.bindService(this.getApplicationContext(), new ServiceBinder.BindStateListener() {
-            @Override
-            public void onBind() {
-                System.out.println("onbind called");
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        mBase.setControlMode(Base.CONTROL_MODE_RAW);
-                        mBase.setNavigationDataSource(Base.NAVIGATION_SOURCE_TYPE_ODOM);
-                    }
-                });
-            }
-            @Override
-            public void onUnbind(String reason) {
-            }
-        });
-    }
-    public void bindOdomNav(){
-        mBase.bindService(this.getApplicationContext(), new ServiceBinder.BindStateListener() {
-            @Override
-            public void onBind() {
-                System.out.println("onbind called");
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        mBase.setControlMode(Base.CONTROL_MODE_NAVIGATION);
-                        mBase.setNavigationDataSource(Base.NAVIGATION_SOURCE_TYPE_ODOM);
-                    }
-                });
-            }
-            @Override
-            public void onUnbind(String reason) {
-            }
-        });
-    }
-    public void bindVls(Context context){
+
+    public void bindBase(){
+        //initializing the Base instance and binding the service
         mBase.bindService(context, new ServiceBinder.BindStateListener() {
             @Override
             public void onBind() {
-                System.out.println("onbind called");
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        mBase.setControlMode(Base.CONTROL_MODE_NAVIGATION);
-                        startVLSNavigation(mBase);
-                    }
-                });
+
             }
+
             @Override
             public void onUnbind(String reason) {
-                mBase.stopVLS();
-                mBase.stop();
+
             }
         });
     }
-    public void startVLSNavigation(Base mBase) {
-        if (this.mBase.isVLSStarted()) {
-            this.mBase.stopVLS();
-        } else
-            this.mBase.startVLS(true, true, new StartVLSListener() {
-                @Override
-                public void onOpened() {
-                    System.out.println("VLS started");
-                    Binders.this.mBase.setNavigationDataSource(Base.NAVIGATION_SOURCE_TYPE_VLS);
-                    setVLSPoseListener(Binders.this.mBase);
-                }
-                @Override
-                public void onError(String errorMessage) {
-                }
-            });
-    }
-    public void setVLSPoseListener(Base mBase) {
-        mBase.setVLSPoseListener(new VLSPoseListener() {
+
+    public void bindSensor(){
+        mSensor.bindService(context, new ServiceBinder.BindStateListener() {
             @Override
-            public void onVLSPoseUpdate(long timestamp, float pose_x, float pose_y, float pose_theta, float v, float w) {
+            public void onBind() {
+
+            }
+
+            @Override
+            public void onUnbind(String reason) {
+
             }
         });
     }
+
+
+    public void bindHead(){
+        mHead = Head.getInstance();
+        mHead.bindService(context, new ServiceBinder.BindStateListener() {
+            @Override
+            public void onBind() {
+
+            }
+
+            @Override
+            public void onUnbind(String reason) {
+
+            }
+        });
+    }
+
+
+    public void bindVision(){
+
+        mVision = Vision.getInstance();
+        mVision.bindService(context, new ServiceBinder.BindStateListener() {
+            @Override
+            public void onBind() {
+
+            }
+
+            @Override
+            public void onUnbind(String reason) {
+
+            }
+        });
+    }
+
+
+
 }
+
+
+//TODO jeg la inn alle bindere her fra MainActivity

@@ -23,6 +23,7 @@ public class RouteFinder extends AsyncTask<ParseInfo, Void, ParseInfo>   {
         @Override
         protected ParseInfo doInBackground(ParseInfo... params){
 
+            //TODO har vi tatt til høyde for mPerLong og mPerLAt når vi regner romsentrum?
 
             ParseInfo parseInfo = params[0];
 
