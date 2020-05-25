@@ -9,9 +9,6 @@ import com.segway.robot.sdk.perception.sensor.SensorData;
 import static java.lang.Math.cos;
 import static java.lang.Math.sin;
 import static java.lang.StrictMath.PI;
-import static java.lang.StrictMath.acos;
-import static java.lang.StrictMath.sqrt;
-
 import java.util.Arrays;
 
 public class ObstacleAvoidance{
@@ -24,14 +21,14 @@ public class ObstacleAvoidance{
     //Basic function for driving around the obstacle on the left side
     private void goLeft(Base mBase, float currentx, float currenty, float currentTheta){
 
-        float stepOneX  = (float) cos(currentTheta + PI/2); 
-        float stepOneY = (float) sin(currentTheta + PI/2);
+        float stepOneX  =  currentx + (float) cos(currentTheta + PI/2);
+        float stepOneY = currenty + (float) sin(currentTheta + PI/2);
        
-        float stepTwoX  = (float) cos(currentTheta);
-        float stepTwoY = (float) sin(currentTheta);
+        float stepTwoX  = stepOneX + (float) cos(currentTheta);
+        float stepTwoY = stepOneY + (float) sin(currentTheta);
         
-        float stepThreeX  = (float) cos(currentTheta - PI/2);
-        float stepThreeY = (float) sin(currentTheta - PI/2);
+        float stepThreeX  = stepTwoX + (float) cos(currentTheta - PI/2);
+        float stepThreeY = stepTwoY + (float) sin(currentTheta - PI/2);
 
 
         //Float[][] array containing a route two drive around an obstacle
@@ -69,14 +66,14 @@ public class ObstacleAvoidance{
     //Basic function for driving around the obstacle on the right side
     private void goRight(Base mBase, float currentx, float currenty, float currentTheta){
 
-        float stepOneX  = (float) cos(currentTheta - PI/2);
-        float stepOneY = (float) sin(currentTheta - PI/2);
+        float stepOneX  = currentx + (float) cos(currentTheta - PI/2);
+        float stepOneY = currenty + (float) sin(currentTheta - PI/2);
 
-        float stepTwoX  = (float) cos(currentTheta);
-        float stepTwoY = (float) sin(currentTheta);
+        float stepTwoX  = stepOneX + (float) cos(currentTheta);
+        float stepTwoY = stepOneY + (float) sin(currentTheta);
 
-        float stepThreeX  = (float) cos(currentTheta + PI/2);
-        float stepThreeY = (float) sin(currentTheta + PI/2);
+        float stepThreeX  = stepTwoX + (float) cos(currentTheta + PI/2);
+        float stepThreeY = stepTwoY + (float) sin(currentTheta + PI/2);
 
 
         float avoidanceList[][] = {  {stepOneX, stepOneY},
