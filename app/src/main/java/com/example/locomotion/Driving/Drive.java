@@ -9,6 +9,10 @@ import com.segway.robot.sdk.perception.sensor.Sensor;
 import com.segway.robot.sdk.perception.sensor.SensorData;
 import java.util.Arrays;
 
+import static java.lang.Math.cos;
+import static java.lang.Math.sin;
+import static java.lang.StrictMath.PI;
+
 public class Drive {
 
     // Creating objects to control the base and the sensors of Loomo. Creates checkpoint object to
@@ -18,6 +22,7 @@ public class Drive {
     private boolean obstacle = false;
     private ObstacleAvoidance obstacleAvoidance = new ObstacleAvoidance();
     private float correctedY;
+    private float correctedX;
     private float rotationAngle;
     private int timerValue = 0;
 
@@ -32,11 +37,6 @@ public class Drive {
         double[] coordy = parseInfo.ycoords;
 
 
-        //Activating mBase to control Loomo
-        mBase.cleanOriginalPoint();
-        Pose2D pose2D = mBase.getOdometryPose(-1);
-        mBase.setOriginalPoint(pose2D);
-
         //Iterating through both coordinate-lists and adding one checkpoint each iteration.
         //"driving" is set to true each iteration
         //i starts at 1 because the first point in the array is the position of Loomo
@@ -48,8 +48,11 @@ public class Drive {
             float y = (float) coordy[i];
 
 
+            //Adding the checkpoint
             mBase.addCheckPoint(x, y);
+            //Used to steer Loomo away from walls by adding increments to the y-value.
             correctedY = y;
+            correctedX = x;
             driving = true;
 
 
@@ -75,19 +78,19 @@ public class Drive {
                 if (mInfraredDistanceRight < 1250 && mInfraredDistanceRight < mInfraredDistanceLeft ){
 
 
-                    //How much Loomo will turn each iteration
-                    correctedY += 0.0005f;
-                    float rotationAngle;
-
-                    //(x - currentX) is the distance to the point in x-direction
-                    //(correctedY - currentY) is the distance to the point in y-direction
-
+                    //The current coordinates and orientation is fetched
+                    Pose2D pose2D = mBase.getOdometryPose(-1);
                     float currentX = pose2D.getX();
                     float currentY = pose2D.getY();
+                    float currentTheta = pose2D.getTheta();
 
-                    rotationAngle = (float)( (180/Math.PI) * Math.atan((correctedY - currentY) / (x - currentX)) );
-                    mBase.addCheckPoint(x,correctedY);
-                    System.out.println("--------  " + "NEW y: " + correctedY + "With this rotation angle: " + rotationAngle + " degrees  --------");
+                    //Calculations to make Loomo go to the left. These are the calculations from
+                    //ObstacleAvoidance, but the increment is reduced to 0.05 meters
+                    correctedX  = currentX + (float) cos(currentTheta + PI/2)*0.05f;
+                    correctedY =  currentY + (float) sin(currentTheta + PI/2)*0.05f;
+
+                    mBase.addCheckPoint(correctedX,correctedY);
+                    System.out.println("Right: " + mInfraredDistanceRight);
                 }
 
                 //If the left sensor is less than 1250 mm away from a wall, then a decrement will
@@ -95,24 +98,22 @@ public class Drive {
                 if (mInfraredDistanceLeft < 1250 && mInfraredDistanceLeft < mInfraredDistanceRight ){
 
 
-                    //How much Loomo will turn each iteration
-                    correctedY -= 0.0005f;
-
-
-                    //(x - currentX) is the distance to the point in x-direction
-                    //(correctedY - currentY) is the distance to the point in y-direction
-
+                    //The current coordinates and orientation is fetched
+                    Pose2D pose2D = mBase.getOdometryPose(-1);
                     float currentX = pose2D.getX();
                     float currentY = pose2D.getY();
+                    float currentTheta = pose2D.getTheta();
 
-                    rotationAngle = (float)( (180/Math.PI) * Math.atan((correctedY - currentY) / (x - currentX)) );
-                    mBase.addCheckPoint(x,correctedY);
-                    System.out.println("--------  " + "NEW y: " + correctedY + "With this rotation angle: " + rotationAngle + " degrees  --------");
+                    //Calculations to make Loomo go to the left. These are the calculations from
+                    //ObstacleAvoidance, but the increment is reduced to 0.05 meters
+                    correctedX  = currentX + (float) cos(currentTheta - PI/2)*0.05f;
+                    correctedY =  currentY + (float) sin(currentTheta - PI/2)*0.05f;
+
+                    mBase.addCheckPoint(correctedX,correctedY);
+                    System.out.println("left: " + mInfraredDistanceLeft);
                 }
 
-                //Printing the distances.
-                System.out.println("left: " + mInfraredDistanceLeft);
-                System.out.println("Right: " + mInfraredDistanceRight);
+
 
 
                 //This function checks if loomo has reached its current checkpoint.
@@ -184,7 +185,7 @@ public class Drive {
                          System.out.println("Starting avoidance function");
                          obstacleAvoidance.avoid(mBase, mSensor);
                          mBase.clearCheckPointsAndStop();
-                         mBase.addCheckPoint(x,correctedY);
+                         mBase.addCheckPoint(correctedX,correctedY);
                      }
                 }
             }

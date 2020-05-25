@@ -1,5 +1,6 @@
 package com.example.locomotion.Tools;
 
+import com.segway.robot.algo.Pose2D;
 import com.segway.robot.sdk.locomotion.sbv.Base;
 import com.segway.robot.sdk.perception.sensor.Sensor;
 import com.segway.robot.sdk.perception.sensor.SensorData;
@@ -114,6 +115,11 @@ public class Calibrate {
 
         System.out.println("We will be rotating with: " + angle );
         mBase.cleanOriginalPoint();
+
+        //Setting Fetching the original point where Loomo stands.
+        mBase.cleanOriginalPoint();
+        Pose2D pose2D = mBase.getOdometryPose(-1);
+        mBase.setOriginalPoint(pose2D);
 
         //Kjøreretning mot Nord: 	58.334512491588754 og 8.576253530218082 til 58.33452608839093 og 8.576253888068521
         //Kjøreretning mot Øst:     58.33452608839093 og 8.576253888068521 til 58.33452618178464 og 8.576285073219395
