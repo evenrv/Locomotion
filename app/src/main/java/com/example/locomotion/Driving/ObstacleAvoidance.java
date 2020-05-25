@@ -13,8 +13,8 @@ import java.util.Arrays;
 
 public class ObstacleAvoidance{
 
-    boolean avoiding;
-    boolean goingLeft = false;
+    private boolean avoiding;
+    private boolean goingLeft = false;
 
 
 
@@ -23,7 +23,10 @@ public class ObstacleAvoidance{
 
         //Step one-three calculates the half-rectangular-route Loomo takes around an obstacle.
         //The x-value and the y-value together make up a vector from the current position, to the
-        // left.
+        //left. The multiplicationfactor "1" in the first two equation represents how far left Loomo
+        //will drive. In the second equation pair, The multiplicationfactor "2" will represent how
+        //far forward Loomo will drive, and in the third two equations, the multiplicationfactor
+        // will determin how far right Loomo will drive to go back to its path.
         float stepOneX   = currentx + (float) cos(currentTheta + PI/2)*1;
         float stepOneY   =  currenty + (float) sin(currentTheta + PI/2)*1;
        
@@ -34,8 +37,8 @@ public class ObstacleAvoidance{
         float stepThreeY =  stepTwoY + (float) sin(currentTheta - PI/2)*1;
 
 
-        //Float[][] array containing the route to avoid around the obstacle.
-        float avoidanceList[][] = {  {stepOneX, stepOneY},
+        //Float[][] array contains the route to avoid the obstacle.
+        float[][] avoidanceList = {{stepOneX, stepOneY},
                 {stepTwoX, stepTwoY},
                 {stepThreeX, stepThreeY}
         };
@@ -70,7 +73,7 @@ public class ObstacleAvoidance{
     //Basic function for driving around the obstacle on the right side
     private void goRight(Base mBase, float currentx, float currenty, float currentTheta){
 
-        //The same formulas as in the goLeft()-function, but step one and step three are switches,
+        //The same formulas as in the goLeft()-function, but step one and step three are switched,
         //so Loomo drives around on the right side instead.
         float stepOneX  = currentx + (float) cos(currentTheta - PI/2)*1;
         float stepOneY = currenty + (float) sin(currentTheta - PI/2)*1;
@@ -82,6 +85,7 @@ public class ObstacleAvoidance{
         float stepThreeY = stepTwoY + (float) sin(currentTheta + PI/2)*1;
 
 
+        //Float[][] array contains the route to avoid the obstacle.
         float avoidanceList[][] = {  {stepOneX, stepOneY},
                 {stepTwoX, stepTwoY},
                 {stepThreeX, stepThreeY}
