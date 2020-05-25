@@ -21,30 +21,34 @@ public class ObstacleAvoidance{
     //Basic function for driving around the obstacle on the left side
     private void goLeft(Base mBase, float currentx, float currenty, float currentTheta){
 
-        float stepOneX  =  currentx + (float) cos(currentTheta + PI/2);
-        float stepOneY = currenty + (float) sin(currentTheta + PI/2);
+        //Step one-three calculates the half-rectangular-route Loomo takes around an obstacle.
+        //The x-value and the y-value together make up a vector from the current position, to the
+        // left.
+        float stepOneX   = currentx + (float) cos(currentTheta + PI/2)*1;
+        float stepOneY   =  currenty + (float) sin(currentTheta + PI/2)*1;
        
-        float stepTwoX  = stepOneX + (float) cos(currentTheta);
-        float stepTwoY = stepOneY + (float) sin(currentTheta);
+        float stepTwoX   = stepOneX + (float) cos(currentTheta)*2;
+        float stepTwoY   =  stepOneY + (float) sin(currentTheta)*2;
         
-        float stepThreeX  = stepTwoX + (float) cos(currentTheta - PI/2);
-        float stepThreeY = stepTwoY + (float) sin(currentTheta - PI/2);
+        float stepThreeX = stepTwoX + (float) cos(currentTheta - PI/2)*1;
+        float stepThreeY =  stepTwoY + (float) sin(currentTheta - PI/2)*1;
 
 
-        //Float[][] array containing a route two drive around an obstacle
+        //Float[][] array containing the route to avoid around the obstacle.
         float avoidanceList[][] = {  {stepOneX, stepOneY},
                 {stepTwoX, stepTwoY},
                 {stepThreeX, stepThreeY}
         };
 
 
+        //A for-loop adds each checkpoint when the previous one is reached.
         for (int point = 0; point < 3; point++) {
             mBase.addCheckPoint(avoidanceList[point][0], avoidanceList[point][1]);
 
             avoiding = true;
 
-            //This loop inhibits the program from proceeding until Loomo has reached the last
-            //checkpoint added in the for loop
+            //This loop inhibits the program from adding another checkpoint proceeding until Loomo
+            //has reached the last checkpoint added in the for loop
             while (avoiding) {
 
 
@@ -66,14 +70,16 @@ public class ObstacleAvoidance{
     //Basic function for driving around the obstacle on the right side
     private void goRight(Base mBase, float currentx, float currenty, float currentTheta){
 
-        float stepOneX  = currentx + (float) cos(currentTheta - PI/2);
-        float stepOneY = currenty + (float) sin(currentTheta - PI/2);
+        //The same formulas as in the goLeft()-function, but step one and step three are switches,
+        //so Loomo drives around on the right side instead.
+        float stepOneX  = currentx + (float) cos(currentTheta - PI/2)*1;
+        float stepOneY = currenty + (float) sin(currentTheta - PI/2)*1;
 
-        float stepTwoX  = stepOneX + (float) cos(currentTheta);
-        float stepTwoY = stepOneY + (float) sin(currentTheta);
+        float stepTwoX  = stepOneX + (float) cos(currentTheta)*2;
+        float stepTwoY = stepOneY + (float) sin(currentTheta)*2;
 
-        float stepThreeX  = stepTwoX + (float) cos(currentTheta + PI/2);
-        float stepThreeY = stepTwoY + (float) sin(currentTheta + PI/2);
+        float stepThreeX  = stepTwoX + (float) cos(currentTheta + PI/2)*1;
+        float stepThreeY = stepTwoY + (float) sin(currentTheta + PI/2)*1;
 
 
         float avoidanceList[][] = {  {stepOneX, stepOneY},
@@ -81,13 +87,20 @@ public class ObstacleAvoidance{
                 {stepThreeX, stepThreeY}
         };
 
-
+        //A for-loop adds each checkpoint from the avoidanceList when the previous one is reached.
         for (int point = 0; point < 3; point++) {
 
+            //Adding the current checkpoint
             mBase.addCheckPoint(avoidanceList[point][0], avoidanceList[point][1]);
 
+
+            //avoiding is set to true, and will be set to false when Loomo arrives at the current
+            //checkpoint.
             avoiding = true;
 
+
+            //This loop inhibits the program from adding another checkpoint proceeding until Loomo
+            //has reached the last checkpoint added in the for loop
             while (avoiding) {
 
 
@@ -134,7 +147,6 @@ public class ObstacleAvoidance{
 
         while (checkingLeft){
             timer++;
-            System.out.println("Another timer: " + timer);
 
             SensorData mUltrasonicData = mSensor.querySensorData(Arrays.
                     asList(Sensor.ULTRASONIC_BODY)).get(0);
