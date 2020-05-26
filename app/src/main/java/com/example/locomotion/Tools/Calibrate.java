@@ -14,7 +14,7 @@ import static java.lang.StrictMath.sqrt;
 
 
 public class Calibrate {
-
+float angle;
     //This function will calibrate Loomos local coordinate-system with the global coordinate system.
     //It returns a float, which will be the degree that the Loomo has to rotate with, in order to
     //align the coordinate systems.
@@ -22,8 +22,6 @@ public class Calibrate {
 
     public float[]  calibrate(Base mBase, Sensor mSensor) {
 
-
-        SensorData mPose2DData = mSensor.querySensorData(Arrays.asList(Sensor.POSE_2D)).get(0);
 
         //Fetching the cisco position for the robot, which returns
         // CiscoPositionDegx and CiscoPositionDegy
@@ -39,7 +37,7 @@ public class Calibrate {
         float ciscoLatRad = (float) (ciscoLat * (PI / 180));
 
 
-        // calculating meters per degree longitude in longitude and latitude directions.
+        // calculating meters per degree in longitude and latitude directions.
         final double metersPerLatitude =  111132.92 - 559.82*cos(2* ciscoLatRad) + 1.175 * cos(4 * ciscoLatRad - 0.0023 * cos(6*ciscoLatRad));
 
         //((PI/180)*OriginCiscoPositiony) is for converting degrees to radians.
@@ -77,6 +75,8 @@ public class Calibrate {
         double[] bVector = {ActualCiscoPositionx2 - OriginCiscoPositionx, ActualCiscoPositiony2 - OriginCiscoPositiony};
         double[] cVector = {ExpectedCiscoPositionx2 - ActualCiscoPositionx2, ExpectedCiscoPositiony2 - ActualCiscoPositiony2};
 
+
+
         //Calculating the length of each vector / side of the triangle with the pythagorean therm.
         double aVectorLengthSquared = Math.pow(aVector[0], 2.0) + Math.pow(aVector[1], 2.0);
         double bVectorLengthSquared = Math.pow(bVector[0], 2.0) + Math.pow(bVector[1], 2.0);
@@ -88,10 +88,17 @@ public class Calibrate {
         System.out.println(" ");
 
 
+DistanceCalculator distanceCalculator = new DistanceCalculator();
+double adistance = distanceCalculator.calculateDistance(ciscoLong, ciscoLat, ciscoLong+1, ciscoLat);
+double bdistance = distanceCalculator.calculateDistance(ciscoLong, ciscoLat, newCiscoPointlon, newCiscoPointlat);
+double cdistance = distanceCalculator.calculateDistance(newCiscoPointlon, newCiscoPointlat,ciscoLong+1 ,ciscoLat );
+        System.out.println("Avstanden a blir: " + adistance);
+        System.out.println("Avstanden b blir: " + bdistance);
+        System.out.println("Avstanden c blir: " + cdistance);
 
         //Calculating the angle between the vector from the expected points and the vector from the
         // real points using the cosine law. This gives us an angle ∈ [0,PI].
-        float angle = (float) acos((aVectorLengthSquared + bVectorLengthSquared - cVectorLengthSquared)
+        angle = (float) acos((aVectorLengthSquared + bVectorLengthSquared - cVectorLengthSquared)
                 / (2 * sqrt(aVectorLengthSquared) * sqrt(bVectorLengthSquared)));
 
 
