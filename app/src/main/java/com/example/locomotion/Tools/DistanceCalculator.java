@@ -7,7 +7,7 @@ public class DistanceCalculator {
     double delta_lambda;
     double a;
     double c;
-    double meters;
+    float meters;
     double R;
 
 
@@ -25,11 +25,9 @@ public class DistanceCalculator {
 
         c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 
-        meters = R * c;  //output distance in meters
+        meters = (float) (R * c);  //output distance in meters
 
-        System.out.println(meters);
-
-        return 1;
+        return meters;
     }
 }
 

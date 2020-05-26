@@ -15,44 +15,50 @@ import static java.lang.StrictMath.sqrt;
 
 public class Calibrate {
 float angle;
+float OriginCiscoPositionx;
+float OriginCiscoPositiony;
+float ExpectedCiscoPositionx2;
+float ExpectedCiscoPositiony2;
+float newCiscoPointlon;
+float newCiscoPointlat;
+float ActualCiscoPositionx2;
+float ActualCiscoPositiony2;
+double aVectorLengthSquared;
+double bVectorLengthSquared;
+double cVectorLengthSquared;
+DistanceCalculator distanceCalculator = new DistanceCalculator();
+
+
+
+
     //This function will calibrate Loomos local coordinate-system with the global coordinate system.
     //It returns a float, which will be the degree that the Loomo has to rotate with, in order to
     //align the coordinate systems.
 
 
     public float[]  calibrate(Base mBase, Sensor mSensor) {
+        final double metersPerLatitude;
+        final double metersPerLongitude;
+
 
 
         //Fetching the cisco position for the robot, which returns
-        // CiscoPositionDegx and CiscoPositionDegy
-
-        //GetCiscoPosition()
-
-
         float ciscoLong = (float) 8.576258173706947;
         float ciscoLat = (float) 58.33452693486112;
 
 
-        //Converting to radians because java.lang.Math.cos uses radians.
-        float ciscoLatRad = (float) (ciscoLat * (PI / 180));
+        metersPerLongitude = distanceCalculator.calculateDistance(ciscoLong, ciscoLat, ciscoLong + 1.0, ciscoLat);
+        System.out.println("Meters per longitude: " + metersPerLongitude);
 
+        metersPerLatitude= distanceCalculator.calculateDistance(ciscoLong, ciscoLat, ciscoLong, ciscoLat + 1.0);
+        System.out.println("Meters per latitude: " + metersPerLatitude);
 
-        // calculating meters per degree in longitude and latitude directions.
-        final double metersPerLatitude =  111132.92 - 559.82*cos(2* ciscoLatRad) + 1.175 * cos(4 * ciscoLatRad - 0.0023 * cos(6*ciscoLatRad));
+        OriginCiscoPositionx =  ciscoLong * (float) metersPerLongitude;
+        OriginCiscoPositiony =  ciscoLat *  (float) metersPerLatitude;
 
-        //((PI/180)*OriginCiscoPositiony) is for converting degrees to radians.
-        final double metersPerLongitude =  111412.84 * cos(ciscoLatRad) - 93.5 * cos(3 * ciscoLatRad) + 0.118 * cos(5 * ciscoLatRad);
-
-        System.out.println("metersPerLatitude: " + metersPerLatitude + "\n" + "metersperlongitude: " + metersPerLongitude);
-
-
-        float OriginCiscoPositionx =  ciscoLong * (float) metersPerLongitude;
-        float OriginCiscoPositiony =  ciscoLat * (float) metersPerLatitude;
-
-
-        //If Loomo was already headed east, we would expect these coordinatesafter
-        float ExpectedCiscoPositionx2 = (OriginCiscoPositionx + 1);
-        float ExpectedCiscoPositiony2 = (((OriginCiscoPositiony)));
+        //If Loomo was already headed east, we would expect these coordinates in meters:
+        ExpectedCiscoPositionx2 = (OriginCiscoPositionx + 1);
+        ExpectedCiscoPositiony2 = (((OriginCiscoPositiony)));
 
 
         //Driving 1 meter forward test
@@ -62,11 +68,11 @@ float angle;
         //GetCiscoPosition()
         //These are the actual coordinates of x2 and y2 in latitude and longitude.
 
-        float newCiscoPointlon = (float) 8.576258890746544;
-        float newCiscoPointlat = (float) 58.33451544969185;
+        newCiscoPointlon = (float) 8.576258890746544;
+        newCiscoPointlat = (float) 58.33451544969185;
 
-        float ActualCiscoPositionx2 =  newCiscoPointlon * (float) metersPerLongitude;
-        float ActualCiscoPositiony2 = newCiscoPointlat  * (float) metersPerLatitude;
+        ActualCiscoPositionx2 =  newCiscoPointlon * (float) metersPerLongitude;
+        ActualCiscoPositiony2 = newCiscoPointlat  * (float) metersPerLatitude;
 
 
 
@@ -78,9 +84,9 @@ float angle;
 
 
         //Calculating the length of each vector / side of the triangle with the pythagorean therm.
-        double aVectorLengthSquared = Math.pow(aVector[0], 2.0) + Math.pow(aVector[1], 2.0);
-        double bVectorLengthSquared = Math.pow(bVector[0], 2.0) + Math.pow(bVector[1], 2.0);
-        double cVectorLengthSquared = Math.pow(cVector[0], 2.0) + Math.pow(cVector[1], 2.0);
+        aVectorLengthSquared = Math.pow(aVector[0], 2.0) + Math.pow(aVector[1], 2.0);
+        bVectorLengthSquared = Math.pow(bVector[0], 2.0) + Math.pow(bVector[1], 2.0);
+        cVectorLengthSquared = Math.pow(cVector[0], 2.0) + Math.pow(cVector[1], 2.0);
 
         System.out.println("Length a = " + sqrt(aVectorLengthSquared));
         System.out.println("Length b = " + sqrt(bVectorLengthSquared));
@@ -88,13 +94,19 @@ float angle;
         System.out.println(" ");
 
 
-DistanceCalculator distanceCalculator = new DistanceCalculator();
-double adistance = distanceCalculator.calculateDistance(ciscoLong, ciscoLat, ciscoLong+1, ciscoLat);
-double bdistance = distanceCalculator.calculateDistance(ciscoLong, ciscoLat, newCiscoPointlon, newCiscoPointlat);
-double cdistance = distanceCalculator.calculateDistance(newCiscoPointlon, newCiscoPointlat,ciscoLong+1 ,ciscoLat );
-        System.out.println("Avstanden a blir: " + adistance);
-        System.out.println("Avstanden b blir: " + bdistance);
-        System.out.println("Avstanden c blir: " + cdistance);
+//Have to find meters per longitude and meters per latitude. This is achieved by adding one degree
+//to the latitude, then to the longitude
+        float metersPerLong = distanceCalculator.calculateDistance(ciscoLong, ciscoLat, ciscoLong + 1.0, ciscoLat);
+        System.out.println("NY Avstand per longitude: " + metersPerLong);
+
+        float metersperLat= distanceCalculator.calculateDistance(ciscoLong, ciscoLat, ciscoLong, ciscoLat + 1.0);
+        System.out.println("NY Avstand per latitude: " + metersperLat);
+
+//Finding the length of vector b:
+float bdistance = distanceCalculator.calculateDistance(ciscoLong, ciscoLat, newCiscoPointlon, newCiscoPointlat);
+        System.out.println("NY Avstanden b blir: " + bdistance);
+
+
 
         //Calculating the angle between the vector from the expected points and the vector from the
         // real points using the cosine law. This gives us an angle ∈ [0,PI].
@@ -124,9 +136,9 @@ double cdistance = distanceCalculator.calculateDistance(newCiscoPointlon, newCis
         mBase.cleanOriginalPoint();
 
         //Setting Fetching the original point where Loomo stands.
-        mBase.cleanOriginalPoint();
+      /*  mBase.cleanOriginalPoint();
         Pose2D pose2D = mBase.getOdometryPose(-1);
-        mBase.setOriginalPoint(pose2D);
+        mBase.setOriginalPoint(pose2D);*/
 
         //Kjøreretning mot Nord: 	58.334512491588754 og 8.576253530218082 til 58.33452608839093 og 8.576253888068521
         //Kjøreretning mot Øst:     58.33452608839093 og 8.576253888068521 til 58.33452618178464 og 8.576285073219395

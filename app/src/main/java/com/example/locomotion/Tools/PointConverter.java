@@ -9,6 +9,7 @@ public class PointConverter {
         float metersperlongitude = parseInfo.mPerLong;
         float metersperlatitude = parseInfo.mPerLat;
         float angle = parseInfo.angle;
+        DistanceCalculator distanceCalculator = new DistanceCalculator();
 
         double[] xcoords = new double[checkPoints.size()];
         double[] ycoords = new double[checkPoints.size()];
