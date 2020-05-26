@@ -22,7 +22,9 @@ public class PointConverter {
             // metersperLatitude and metersperlongitude so that they're unit will be in meters.
 
 
+
             Double[] singleLocalCheckpoint = {
+
                     (checkPoints.get(position)[0] - CiscoCoords[0]) * metersperlongitude,
                     (checkPoints.get(position)[1] - CiscoCoords[1]) * metersperlatitude
             };
