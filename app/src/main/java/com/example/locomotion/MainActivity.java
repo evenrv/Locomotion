@@ -123,7 +123,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         //and RoomID as the second element of the Room array
         roomNumber = Room[0];
         RoomID = Room[1];
-        mSensor = Sensor.getInstance();
 
         //TODO: Vi bør legge alt dette i en egen klasse, feks ved oppstart, og
 /*

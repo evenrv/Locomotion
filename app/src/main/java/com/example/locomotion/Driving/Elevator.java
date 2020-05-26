@@ -21,6 +21,8 @@ public class Elevator extends AppCompatActivity{
 
         //Loomo starts following a person into the elevator.
         mBase.setControlMode(Base.CONTROL_MODE_FOLLOW_TARGET);
+
+        // Parse route again,
         parseInfo = new RouteFinder().execute(parseInfo).get();
 
         setContentView(R.layout.front_page);

@@ -44,7 +44,7 @@ public class SerialArduino extends AppCompatActivity implements ArduinoListener 
         @Override
         protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+       // setContentView(R.layout.activity_main);
 
         //TODO: lag ny layout for USB_serial
 /*
