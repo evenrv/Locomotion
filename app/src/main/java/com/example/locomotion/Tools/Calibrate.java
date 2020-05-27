@@ -43,8 +43,8 @@ DistanceCalculator distanceCalculator = new DistanceCalculator();
 
 
         //Fetching the cisco position for the robot, which returns
-        float ciscoLong = (float) 8.576258173706947;
-        float ciscoLat = (float) 58.33452693486112;
+        float ciscoLong = (float) 8.57615380147979;
+        float ciscoLat = (float)  58.33448502014264;
 
 
         metersPerLongitude = distanceCalculator.calculateDistance(ciscoLong, ciscoLat, ciscoLong + 1.0, ciscoLat);
@@ -68,8 +68,8 @@ DistanceCalculator distanceCalculator = new DistanceCalculator();
         //GetCiscoPosition()
         //These are the actual coordinates of x2 and y2 in latitude and longitude.
 
-        newCiscoPointlon = (float) 8.576258890746544;
-        newCiscoPointlat = (float) 58.33451544969185;
+        newCiscoPointlon = (float) 8.57615610510382;
+        newCiscoPointlat = (float) 58.334474727411674;
 
         ActualCiscoPositionx2 =  newCiscoPointlon * (float) metersPerLongitude;
         ActualCiscoPositiony2 = newCiscoPointlat  * (float) metersPerLatitude;
@@ -127,18 +127,20 @@ float bdistance = distanceCalculator.calculateDistance(ciscoLong, ciscoLat, newC
         // found with the cosine law.
 
         if (bVector[1] < 0) {
-            angle = -angle;
-        } else if (bVector[1] > 0) {
             angle = angle;
+        } else if (bVector[1] > 0) {
+            angle = -angle;
         }
 
         System.out.println("We will be rotating with: " + angle );
         mBase.cleanOriginalPoint();
 
         //Setting Fetching the original point where Loomo stands.
-      /*  mBase.cleanOriginalPoint();
+        mBase.cleanOriginalPoint();
         Pose2D pose2D = mBase.getOdometryPose(-1);
-        mBase.setOriginalPoint(pose2D);*/
+        mBase.setOriginalPoint(pose2D);
+
+        //TODO: FJERN DETTE:
 
         //Kjøreretning mot Nord: 	58.334512491588754 og 8.576253530218082 til 58.33452608839093 og 8.576253888068521
         //Kjøreretning mot Øst:     58.33452608839093 og 8.576253888068521 til 58.33452618178464 og 8.576285073219395

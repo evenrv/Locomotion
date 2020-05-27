@@ -15,6 +15,8 @@ public class ObstacleAvoidance{
 
     private boolean avoiding;
     private boolean goingLeft = false;
+    private float avoidanceDist = 1;        //Length of one of the vectors used to drive
+                                               // around an obstacle
 
 
 
@@ -27,14 +29,14 @@ public class ObstacleAvoidance{
         //will drive. In the second equation pair, The multiplicationfactor "2" will represent how
         //far forward Loomo will drive, and in the third two equations, the multiplicationfactor
         // will determin how far right Loomo will drive to go back to its path.
-        float stepOneX   = currentx + (float) cos(currentTheta + PI/2)*1;
-        float stepOneY   =  currenty + (float) sin(currentTheta + PI/2)*1;
+        float stepOneX   = currentx + (float) cos(currentTheta + PI/2)*avoidanceDist;
+        float stepOneY   =  currenty + (float) sin(currentTheta + PI/2)*avoidanceDist;
        
-        float stepTwoX   = stepOneX + (float) cos(currentTheta)*2;
-        float stepTwoY   =  stepOneY + (float) sin(currentTheta)*2;
+        float stepTwoX   = stepOneX + (float) cos(currentTheta)*2*avoidanceDist;
+        float stepTwoY   =  stepOneY + (float) sin(currentTheta)*2*avoidanceDist;
         
-        float stepThreeX = stepTwoX + (float) cos(currentTheta - PI/2)*1;
-        float stepThreeY =  stepTwoY + (float) sin(currentTheta - PI/2)*1;
+        float stepThreeX = stepTwoX + (float) cos(currentTheta - PI/2)*avoidanceDist;
+        float stepThreeY =  stepTwoY + (float) sin(currentTheta - PI/2)*avoidanceDist;
 
 
         //Float[][] array contains the route to avoid the obstacle.
@@ -75,14 +77,14 @@ public class ObstacleAvoidance{
 
         //The same formulas as in the goLeft()-function, but step one and step three are switched,
         //so Loomo drives around on the right side instead.
-        float stepOneX  = currentx + (float) cos(currentTheta - PI/2)*1;
-        float stepOneY = currenty + (float) sin(currentTheta - PI/2)*1;
+        float stepOneX  = currentx + (float) cos(currentTheta - PI/2)*avoidanceDist;
+        float stepOneY = currenty + (float) sin(currentTheta - PI/2)*avoidanceDist;
 
-        float stepTwoX  = stepOneX + (float) cos(currentTheta)*2;
-        float stepTwoY = stepOneY + (float) sin(currentTheta)*2;
+        float stepTwoX  = stepOneX + (float) cos(currentTheta)*2*avoidanceDist;
+        float stepTwoY = stepOneY + (float) sin(currentTheta)*2*avoidanceDist;
 
-        float stepThreeX  = stepTwoX + (float) cos(currentTheta + PI/2)*1;
-        float stepThreeY = stepTwoY + (float) sin(currentTheta + PI/2)*1;
+        float stepThreeX  = stepTwoX + (float) cos(currentTheta + PI/2)*avoidanceDist;
+        float stepThreeY = stepTwoY + (float) sin(currentTheta + PI/2)*avoidanceDist;
 
 
         //Float[][] array contains the route to avoid the obstacle.
