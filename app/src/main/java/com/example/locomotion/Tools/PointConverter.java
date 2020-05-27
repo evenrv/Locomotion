@@ -9,6 +9,7 @@ public class PointConverter {
         float metersperlongitude = parseInfo.mPerLong;
         float metersperlatitude = parseInfo.mPerLat;
         float angle = parseInfo.angle;
+        DistanceCalculator distanceCalculator = new DistanceCalculator();
 
         double[] xcoords = new double[checkPoints.size()];
         double[] ycoords = new double[checkPoints.size()];
@@ -21,7 +22,9 @@ public class PointConverter {
             // metersperLatitude and metersperlongitude so that they're unit will be in meters.
 
 
+
             Double[] singleLocalCheckpoint = {
+
                     (checkPoints.get(position)[0] - CiscoCoords[0]) * metersperlongitude,
                     (checkPoints.get(position)[1] - CiscoCoords[1]) * metersperlatitude
             };

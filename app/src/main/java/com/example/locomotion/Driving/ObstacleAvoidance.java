@@ -6,34 +6,52 @@ import com.segway.robot.algo.minicontroller.CheckPointStateListener;
 import com.segway.robot.sdk.locomotion.sbv.Base;
 import com.segway.robot.sdk.perception.sensor.Sensor;
 import com.segway.robot.sdk.perception.sensor.SensorData;
-
+import static java.lang.Math.cos;
+import static java.lang.Math.sin;
+import static java.lang.StrictMath.PI;
 import java.util.Arrays;
 
 public class ObstacleAvoidance{
 
-    boolean avoiding;
-    boolean goingLeft = false;
+    private boolean avoiding;
+    private boolean goingLeft = false;
 
 
 
     //Basic function for driving around the obstacle on the left side
-    private void goLeft(Base mBase, float currentx, float currenty){
+    private void goLeft(Base mBase, float currentx, float currenty, float currentTheta){
 
-        //Float[][] array containing a route two drive around an obstacle
-        float avoidanceListLeft[][] = {  {currentx, currenty + 1f},
-                {currentx + 2, currenty + 1f},
-                {currentx + 2, currenty}
+        //Step one-three calculates the half-rectangular-route Loomo takes around an obstacle.
+        //The x-value and the y-value together make up a vector from the current position, to the
+        //left. The multiplicationfactor "1" in the first two equation represents how far left Loomo
+        //will drive. In the second equation pair, The multiplicationfactor "2" will represent how
+        //far forward Loomo will drive, and in the third two equations, the multiplicationfactor
+        // will determin how far right Loomo will drive to go back to its path.
+        float stepOneX   = currentx + (float) cos(currentTheta + PI/2)*1;
+        float stepOneY   =  currenty + (float) sin(currentTheta + PI/2)*1;
+       
+        float stepTwoX   = stepOneX + (float) cos(currentTheta)*2;
+        float stepTwoY   =  stepOneY + (float) sin(currentTheta)*2;
+        
+        float stepThreeX = stepTwoX + (float) cos(currentTheta - PI/2)*1;
+        float stepThreeY =  stepTwoY + (float) sin(currentTheta - PI/2)*1;
+
+
+        //Float[][] array contains the route to avoid the obstacle.
+        float[][] avoidanceList = {{stepOneX, stepOneY},
+                {stepTwoX, stepTwoY},
+                {stepThreeX, stepThreeY}
         };
 
 
+        //A for-loop adds each checkpoint when the previous one is reached.
         for (int point = 0; point < 3; point++) {
-            mBase.addCheckPoint(avoidanceListLeft[point][0], avoidanceListLeft[point][1]);
-            System.out.println("--------________------- Point: " + point);
+            mBase.addCheckPoint(avoidanceList[point][0], avoidanceList[point][1]);
 
             avoiding = true;
 
-            //This loop inhibits the program from proceeding until Loomo has reached the last
-            //checkpoint added in the for loop
+            //This loop inhibits the program from adding another checkpoint proceeding until Loomo
+            //has reached the last checkpoint added in the for loop
             while (avoiding) {
 
 
@@ -53,22 +71,40 @@ public class ObstacleAvoidance{
     }
 
     //Basic function for driving around the obstacle on the right side
-    private void goRight(Base mBase, float currentx, float currenty){
+    private void goRight(Base mBase, float currentx, float currenty, float currentTheta){
+
+        //The same formulas as in the goLeft()-function, but step one and step three are switched,
+        //so Loomo drives around on the right side instead.
+        float stepOneX  = currentx + (float) cos(currentTheta - PI/2)*1;
+        float stepOneY = currenty + (float) sin(currentTheta - PI/2)*1;
+
+        float stepTwoX  = stepOneX + (float) cos(currentTheta)*2;
+        float stepTwoY = stepOneY + (float) sin(currentTheta)*2;
+
+        float stepThreeX  = stepTwoX + (float) cos(currentTheta + PI/2)*1;
+        float stepThreeY = stepTwoY + (float) sin(currentTheta + PI/2)*1;
 
 
-        float avoidanceListRight[][] = {  {currentx, currenty - 1f},
-                {currentx + 2, currenty - 1f},
-                {currentx + 2, currenty}
+        //Float[][] array contains the route to avoid the obstacle.
+        float avoidanceList[][] = {  {stepOneX, stepOneY},
+                {stepTwoX, stepTwoY},
+                {stepThreeX, stepThreeY}
         };
 
-
+        //A for-loop adds each checkpoint from the avoidanceList when the previous one is reached.
         for (int point = 0; point < 3; point++) {
 
-            mBase.addCheckPoint(avoidanceListRight[point][0], avoidanceListRight[point][1]);
-            System.out.println("--------________------- Point: " + point);
+            //Adding the current checkpoint
+            mBase.addCheckPoint(avoidanceList[point][0], avoidanceList[point][1]);
 
+
+            //avoiding is set to true, and will be set to false when Loomo arrives at the current
+            //checkpoint.
             avoiding = true;
 
+
+            //This loop inhibits the program from adding another checkpoint proceeding until Loomo
+            //has reached the last checkpoint added in the for loop
             while (avoiding) {
 
 
@@ -115,14 +151,13 @@ public class ObstacleAvoidance{
 
         while (checkingLeft){
             timer++;
-            System.out.println("Another timer: " + timer);
 
             SensorData mUltrasonicData = mSensor.querySensorData(Arrays.
                     asList(Sensor.ULTRASONIC_BODY)).get(0);
             float mUltrasonicDistance = mUltrasonicData.getIntData()[0];
 
             if (mUltrasonicDistance > 1000){
-                goLeft(mBase, currentx, currenty);
+                goLeft(mBase, currentx, currenty, currentTheta);
                 checkingLeft = false;
                 goingLeft = true;
             }
@@ -154,7 +189,7 @@ public class ObstacleAvoidance{
                 float mUltrasonicDistance = mUltrasonicData.getIntData()[0];
 
                 if (mUltrasonicDistance > 900){
-                    goRight(mBase, currentx, currenty);
+                    goRight(mBase, currentx, currenty, currentTheta);
                     checkingRight = false;
                 }
 

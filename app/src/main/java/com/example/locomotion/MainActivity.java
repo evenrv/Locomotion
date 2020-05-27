@@ -26,6 +26,7 @@ import com.example.locomotion.Tools.CISCO.Cisco;
 import com.example.locomotion.Tools.CISCO.CiscoArr;
 import com.example.locomotion.Tools.CISCO.CiscoInfo;
 import com.google.android.material.snackbar.Snackbar;
+import com.segway.robot.sdk.base.bind.ServiceBinder;
 import com.segway.robot.sdk.locomotion.head.Head;
 import com.segway.robot.sdk.locomotion.sbv.Base;
 import com.segway.robot.sdk.perception.sensor.Sensor;
@@ -58,20 +59,17 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
 
     Cisco cisco;
-
+    public Context context;
 
     // make instances of Loomo public
-    public Base mBase = Base.getInstance();
-    public Head mHead = Head.getInstance();
-    public Sensor mSensor = Sensor.getInstance();
-    public Vision mVision = Vision.getInstance();
-    public Context context = this.getApplicationContext();
+    public Base mBase;
+    public Head mHead ;
+    public Sensor mSensor;
+    public Vision mVision;
     public CreateRooms createrooms = new CreateRooms();
     String[][] Room;
     public String[] RoomID;
     public String[] roomNumber;
-
-    Binders binders = new Binders();
 
 
     public FindRoom findroom = new FindRoom();
@@ -84,9 +82,12 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        context = this.getApplicationContext();
+        mBase = Base.getInstance();
+        mHead = Head.getInstance();
+        mSensor = Sensor.getInstance();
+        mVision = Vision.getInstance();
 
-        binders.bindAll();  // bind head, base, vision and sensor
-        binders.bindBase();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.front_page);
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -102,30 +103,36 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         //"Room" is a double[][] array containing the IDs in one array, and the corresponding
         // roomNumbers in the other. This means each element i in the ID array will fit each element
         //i in the roomNumbers array
+
         try {
-            Cisco cisco = new Cisco();
+            /*
+                   Cisco cisco = new Cisco();
             CiscoInfo ciscoInfo = new CiscoInfo();
             String stringUrl = "https://cmx.uia.no/api/location/v1/clients/f4:4d:30:c3:18:07";
 
             ciscoArr.add(0, cisco.execute(stringUrl).get());
+             */
+
 
             Room = createrooms.createarrays(input);
 
         } catch (IOException e) {
             e.printStackTrace();
-        } catch (InterruptedException e) {
+        } /*catch (InterruptedException e) {
+
             e.printStackTrace();
         } catch (ExecutionException e) {
             e.printStackTrace();
-        }
+        }*/
+
 
         //Assigning roomNumber as the first element
         //and RoomID as the second element of the Room array
         roomNumber = Room[0];
         RoomID = Room[1];
 
-        //TODO: Vi bør legge alt dette i en egen klasse, feks ved oppstart, og
-/*
+
+
         //initializing the sensor instance and binding the service
         mSensor = Sensor.getInstance();
         mSensor.bindService(getApplicationContext(), new ServiceBinder.BindStateListener() {
@@ -179,8 +186,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
             }
         });
- */
-        //TODO: Vi bør legge alt dette i en egen klasse
 
 
         //Loomo needs to be calibrated first thing after startup.
