@@ -23,8 +23,8 @@ public class Drive {
     private ObstacleAvoidance obstacleAvoidance = new ObstacleAvoidance();
     private float correctedY;
     private float correctedX;
-    private float rotationAngle;
     private int timerValue = 0;
+    long currentTime = System.currentTimeMillis();
 
 
     //The function that adds checkpoints for Loomo
@@ -40,12 +40,12 @@ public class Drive {
         //Iterating through both coordinate-lists and adding one checkpoint each iteration.
         //"driving" is set to true each iteration
         //i starts at 1 because the first point in the array is the position of Loomo
-        for (int i = 1; i < coordx.length; ++i) {
+        for (int point= 1;point< coordx.length; ++point) {
 
 
             //x and y are the coordinates that will be used in mBase.addcheckPoint.
-            float x = (float) coordx[i];
-            float y = (float) coordy[i];
+            float x = (float) coordx[point];
+            float y = (float) coordy[point];
 
 
             //Adding the checkpoint
@@ -54,6 +54,7 @@ public class Drive {
             correctedY = y;
             correctedX = x;
             driving = true;
+            System.out.println("Added point------------------------" +point + "--------------Out of" + (coordx.length -1) + "points");
 
 
             //Everything happening while Loomo is driving will be in this while loop.
@@ -75,7 +76,7 @@ public class Drive {
                 //In each iteration, if the right infrared sensor is closer than 1250 mm from a
                 //wall, an increment will be added to the y coordinate.
                 //(y is positive to the left while looking forward).
-                if (mInfraredDistanceRight < 1250 && mInfraredDistanceRight < mInfraredDistanceLeft ){
+               /* if (mInfraredDistanceRight < 1250 && mInfraredDistanceRight < mInfraredDistanceLeft ){
 
 
                     //The current coordinates and orientation is fetched
@@ -112,7 +113,7 @@ public class Drive {
                     mBase.addCheckPoint(correctedX,correctedY);
                     System.out.println("left: " + mInfraredDistanceLeft);
                 }
-
+*/
 
 
 
@@ -152,29 +153,33 @@ public class Drive {
                 //obstacle to move.
                 // It is also possible to use Loomos camera to detect what the obstacle might be.
                 // If it is a human, for instance, Loomo could tell it to move out if its path.
-                 if (mUltrasonicDistance < 900){
+                 if (mUltrasonicDistance < 600){
 
                      mBase.clearCheckPointsAndStop();
                      boolean waitForObstacle = true;
                      timerValue = 0;
+                   //  long startTime = System.currentTimeMillis();
 
                     while(waitForObstacle){
+                       // currentTime = System.currentTimeMillis();
+
                         SensorData mUltrasonicData1 = mSensor.querySensorData(Arrays.
                                 asList(Sensor.ULTRASONIC_BODY)).get(0);
                         float mUltrasonicDistance1 = mUltrasonicData1.getIntData()[0];
 
                         System.out.println("mUltrasonicDistance1:  " + mUltrasonicDistance1);
                         timerValue++;
-                        System.out.println("Timer value: " + "----------------" + timerValue);
+                        System.out.println("Timer value: " + "----------------" + (timerValue));
 
                         //If the obstacle moves, Loomo will add a checkpoint at the previous
-                        //checkpoint ( x, correctedY )
+                        //checkpoint ( correctedX, correctedY )
                         if(mUltrasonicDistance1 > 900){
                             waitForObstacle = false;
-                            mBase.addCheckPoint(x,correctedY);
+                            mBase.addCheckPoint(correctedX,correctedY);
                         }
 
-                        else if (timerValue == 3500){
+                        //If the time that has passed is larger than 3 seconds.
+                        else if (timerValue> 3000){
                             obstacle = true;
                             driving = false;
                             waitForObstacle = false;

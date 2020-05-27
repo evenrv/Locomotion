@@ -23,8 +23,6 @@ public class RouteFinder extends AsyncTask<ParseInfo, Void, ParseInfo>   {
         @Override
         protected ParseInfo doInBackground(ParseInfo... params){
 
-            //TODO har vi tatt til høyde for mPerLong og mPerLAt når vi regner romsentrum?
-
             ParseInfo parseInfo = params[0];
 
 
@@ -42,11 +40,11 @@ public class RouteFinder extends AsyncTask<ParseInfo, Void, ParseInfo>   {
             System.out.println("Center of Room: " + avgCoord[0] + " " + avgCoord[1] + ", at floor: " + roomInfo.z);
 
             UrlMaker urlMaker = new UrlMaker();
-            //Cisco coordinates is fetched in the async task
+            //Cisco coordinates are fetched in the async task
             Double[] ciscoCoords;
 
-            //CiscoPos ciscoPos = new CiscoPos(); --> currentCoords + muligens current_z her
-            ciscoCoords = new Double[]{8.576590048403403, 58.33423511424411, 2.0};
+            //Cisco returns the following values for location:
+            ciscoCoords = new Double[]{8.576170839175433, 58.334475507774954, 3.0};
             String urlPath;
             urlPath = urlMaker.makeUrl(ciscoCoords, avgCoord, roomInfo.z);
 
