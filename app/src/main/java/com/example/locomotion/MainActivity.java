@@ -26,6 +26,7 @@ import com.example.locomotion.Tools.CISCO.Cisco;
 import com.example.locomotion.Tools.CISCO.CiscoArr;
 import com.example.locomotion.Tools.CISCO.CiscoInfo;
 import com.google.android.material.snackbar.Snackbar;
+import com.segway.robot.sdk.base.bind.ServiceBinder;
 import com.segway.robot.sdk.locomotion.head.Head;
 import com.segway.robot.sdk.locomotion.sbv.Base;
 import com.segway.robot.sdk.perception.sensor.Sensor;
@@ -70,8 +71,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     public String[] RoomID;
     public String[] roomNumber;
 
-    Binders binders = new Binders();
-
 
     public FindRoom findroom = new FindRoom();
 
@@ -88,9 +87,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         mHead = Head.getInstance();
         mSensor = Sensor.getInstance();
         mVision = Vision.getInstance();
-
-        //binders.bindAll();  // bind head, base, vision and sensor
-       // binders.bindBase();
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.front_page);
@@ -136,7 +132,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         RoomID = Room[1];
 
 
-/*
+
         //initializing the sensor instance and binding the service
         mSensor = Sensor.getInstance();
         mSensor.bindService(getApplicationContext(), new ServiceBinder.BindStateListener() {
@@ -190,8 +186,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
             }
         });
- */
-        //TODO: Vi bør legge alt dette i en egen klasse
 
 
         //Loomo needs to be calibrated first thing after startup.
