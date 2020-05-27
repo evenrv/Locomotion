@@ -1,62 +1,107 @@
-package com.example.locomotion;
+package com.example.locomotion.Perpendicular;
+
+// Class for comparing diverse Odom- and VLS-parameters
+
+import android.content.BroadcastReceiver;
+import android.content.ComponentName;
+import android.content.ContentResolver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.IntentSender;
+import android.content.ServiceConnection;
+import android.content.SharedPreferences;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageManager;
+import android.content.res.AssetManager;
+import android.content.res.Configuration;
+import android.content.res.Resources;
+import android.database.DatabaseErrorHandler;
+import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
+import android.net.Uri;
+import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
+import android.os.UserHandle;
+import android.view.Display;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.segway.robot.algo.Pose2D;
+import com.segway.robot.algo.PoseVLS;
 import com.segway.robot.algo.tf.AlgoTfData;
 import com.segway.robot.sdk.locomotion.sbv.Base;
+import com.segway.robot.sdk.locomotion.sbv.BasePose;
 import com.segway.robot.sdk.perception.sensor.Sensor;
 import com.segway.robot.sdk.perception.sensor.SensorData;
+import com.segway.robot.sdk.vision.Vision;
+import com.segway.robot.sdk.vision.frame.DepthFrameInfo;
+import com.segway.robot.sdk.vision.stream.Resolution;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Arrays;
+import java.util.WeakHashMap;
 import java.util.concurrent.TimeUnit;
 
+import static java.lang.Math.atan2;
 import static java.lang.Math.cos;
 import static java.lang.Math.floor;
+import static java.lang.Math.log;
 import static java.lang.Math.sin;
 import static java.lang.Math.sqrt;
 import static java.lang.StrictMath.abs;
 
+public class FindPerpendicular  {
+    public Sensor mSensor;
+    public Base mBase;
+    float itAngle;
+    float dx;
+    float dy;
+    float angleCal;
+    float irLeft;
+    float irRight;
+    float usDistance;
+    float newAngle = 0;
+    float x_init;
+    float x_prev;
 
-    public class PerpendicularOdom  {
-        public Sensor mSensor;
-        public Base mBase;
-        float itAngle;
-        float dx;
-        float dy;
-        float angleCal;
-        float irLeft;
-        float irRight;
-        float usDistance;
-        float newAngle = 0;
-        float x_init;
-        float x_prev;
+    float y_init;
+    float y_prev;
 
-        float y_init;
-        float y_prev;
+    float w_z = 10;
 
-        float w_z = 10;
+    float frameL = 0 ; // mm
+    float frameR = 50;  //mm
+    float kathetY;
+    float kathetX = frameR-frameL;
+    public boolean driving = true;
+    private float dt;
 
-        float frameL = 0 ; // mm
-        float frameR = 50;  //mm
-        float kathetY;
-        float kathetX = frameR-frameL;
-        public boolean driving = true;
-        private float dt;
+    float mBaseYaw;
+    float speed;
+    float startTime;
+    float theta;
+    float y_goal;
+    float x_goal;
 
-        float mBaseYaw;
-        float speed;
-        float startTime;
-        float theta;
-        float y_goal;
-        float x_goal;
+
         public void startNavigation(Base mBase, Sensor mSensor, float x_value, float y_value, float angle) throws InterruptedException {
             AlgoTfData Tf;
             mBase.cleanOriginalPoint();
-            Pose2D odomPose = mBase.getOdometryPose(-1);
+            PoseVLS poseVLS = mBase.getVLSPose(-1);
             // Object of timer-class
 
 
             Pose2D odomPoseStart = mBase.getVLSPose(-1);
-            Pose2D poseOdom = odomPose;
+            Pose2D poseOdom = poseVLS;
             mBase.setOriginalPoint(odomPoseStart);
             float dx;
             float dy;
@@ -71,16 +116,16 @@ import static java.lang.StrictMath.abs;
             float irRight=mSensor.getInfraredDistance().getRightDistance();
             usDistance=mSensor.getUltrasonicDistance().getDistance();
             poseOdom = mBase.getOdometryPose(-1);
-            x_init = poseOdom.getX();
-            y_init = poseOdom.getY();
+            x_init = poseVLS.getX();
+            y_init = poseVLS.getY();
             //
             //mBase.setUltrasonicObstacleAvoidanceDistance(0.25f);
 
             int count=1;
             // drive forward, until ultrasonicDistance is < 300 mm
-            float x = mBase.getOdometryPose(-1).getX();
-            float y = mBase.getOdometryPose(-1).getY();
-            float th = mBase.getOdometryPose(-1).getTheta();
+            float x = mBase.getVLSPose(-1).getX();
+            float y = mBase.getVLSPose(-1).getY();
+            float th = mBase.getVLSPose(-1).getTheta();
 
             if (usDistance > 500 && irLeft >1000 && irRight> 1000){
                 dx = (float) (0.75*(cos(th)));
@@ -98,9 +143,9 @@ import static java.lang.StrictMath.abs;
                 }
             }
             TimeUnit.MILLISECONDS.sleep(2500);
-            x = mBase.getOdometryPose(-1).getX();
-            y = mBase.getOdometryPose(-1).getY();
-            th = mBase.getOdometryPose(-1).getTheta();
+            x = mBase.getVLSPose(-1).getX();
+            y = mBase.getVLSPose(-1).getY();
+            th = mBase.getVLSPose(-1).getTheta();
             if (usDistance > 500 && irLeft >800 & irRight> 800){
                 dx = (float) (0.55*(cos(th)));
                 dy = (float) (0.55*(sin(th)));
@@ -117,10 +162,9 @@ import static java.lang.StrictMath.abs;
                 }
             }
             TimeUnit.MILLISECONDS.sleep(2500);
-
-            x = mBase.getOdometryPose(-1).getX();
-            y = mBase.getOdometryPose(-1).getY();
-            th = mBase.getOdometryPose(-1).getTheta();
+            x = mBase.getVLSPose(-1).getX();
+            y = mBase.getVLSPose(-1).getY();
+            th = mBase.getVLSPose(-1).getTheta();
             if (irLeft >700 && irRight> 700){
                 dx = (float) (0.45*(cos(th)));
                 dy = (float) (0.45*(sin(th)));
@@ -138,10 +182,9 @@ import static java.lang.StrictMath.abs;
             }
             TimeUnit.MILLISECONDS.sleep(2500);
 
-
-            x = mBase.getOdometryPose(-1).getX();
-            y = mBase.getOdometryPose(-1).getY();
-            th = mBase.getOdometryPose(-1).getTheta();
+            x = mBase.getVLSPose(-1).getX();
+            y = mBase.getVLSPose(-1).getY();
+            th = mBase.getVLSPose(-1).getTheta();
             if (usDistance > 400 && irLeft >650 && irRight> 650){
                 dx = (float) (0.4*(cos(th)));
                 dy = (float) (0.4*(sin(th)));
@@ -159,10 +202,9 @@ import static java.lang.StrictMath.abs;
             }
             TimeUnit.MILLISECONDS.sleep(2500);
 
-
-            x = mBase.getOdometryPose(-1).getX();
-            y = mBase.getOdometryPose(-1).getY();
-            th = mBase.getOdometryPose(-1).getTheta();
+            x = mBase.getVLSPose(-1).getX();
+            y = mBase.getVLSPose(-1).getY();
+            th = mBase.getVLSPose(-1).getTheta();
             if (irLeft > 500 && irLeft>500){
                 dx = (float) (0.25*(cos(th)));
                 dy = (float) (0.25*(sin(th)));
@@ -330,4 +372,5 @@ import static java.lang.StrictMath.abs;
             return  false;
         }
 
-    }
+}
+
