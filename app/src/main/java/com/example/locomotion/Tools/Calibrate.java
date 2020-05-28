@@ -26,6 +26,7 @@ float ActualCiscoPositiony2;
 double aVectorLengthSquared;
 double bVectorLengthSquared;
 double cVectorLengthSquared;
+float distance;
 DistanceCalculator distanceCalculator = new DistanceCalculator();
 
 
@@ -43,22 +44,17 @@ DistanceCalculator distanceCalculator = new DistanceCalculator();
 
 
         //Fetching the cisco position for the robot, which returns
-        float ciscoLong = (float) 8.57615380147979;
-        float ciscoLat = (float)  58.33448502014264;
+        float ciscoLong = (float) 8.57617285865058;
+        float ciscoLat = (float)  58.33447638466072;
 
 
         metersPerLongitude = distanceCalculator.calculateDistance(ciscoLong, ciscoLat, ciscoLong + 1.0, ciscoLat);
-        System.out.println("Meters per longitude: " + metersPerLongitude);
 
         metersPerLatitude= distanceCalculator.calculateDistance(ciscoLong, ciscoLat, ciscoLong, ciscoLat + 1.0);
-        System.out.println("Meters per latitude: " + metersPerLatitude);
+
 
         OriginCiscoPositionx =  ciscoLong * (float) metersPerLongitude;
         OriginCiscoPositiony =  ciscoLat *  (float) metersPerLatitude;
-
-        //If Loomo was already headed east, we would expect these coordinates in meters:
-        ExpectedCiscoPositionx2 = (OriginCiscoPositionx + 1);
-        ExpectedCiscoPositiony2 = (((OriginCiscoPositiony)));
 
 
         //Driving 1 meter forward test
@@ -68,8 +64,15 @@ DistanceCalculator distanceCalculator = new DistanceCalculator();
         //GetCiscoPosition()
         //These are the actual coordinates of x2 and y2 in latitude and longitude.
 
-        newCiscoPointlon = (float) 8.57615610510382;
-        newCiscoPointlat = (float) 58.334474727411674;
+
+
+        //If Loomo was already headed east, we would expect these coordinates in meters:
+        ExpectedCiscoPositionx2 = (OriginCiscoPositionx + 1);
+        ExpectedCiscoPositiony2 = (((OriginCiscoPositiony)));
+
+        newCiscoPointlon = (float) 8.57617413279317;
+        newCiscoPointlat = (float) 58.334468102336245;
+
 
         ActualCiscoPositionx2 =  newCiscoPointlon * (float) metersPerLongitude;
         ActualCiscoPositiony2 = newCiscoPointlat  * (float) metersPerLatitude;
@@ -93,21 +96,6 @@ DistanceCalculator distanceCalculator = new DistanceCalculator();
         System.out.println("Length c = " + sqrt(cVectorLengthSquared));
         System.out.println(" ");
 
-
-//Have to find meters per longitude and meters per latitude. This is achieved by adding one degree
-//to the latitude, then to the longitude
-        float metersPerLong = distanceCalculator.calculateDistance(ciscoLong, ciscoLat, ciscoLong + 1.0, ciscoLat);
-        System.out.println("NY Avstand per longitude: " + metersPerLong);
-
-        float metersperLat= distanceCalculator.calculateDistance(ciscoLong, ciscoLat, ciscoLong, ciscoLat + 1.0);
-        System.out.println("NY Avstand per latitude: " + metersperLat);
-
-//Finding the length of vector b:
-float bdistance = distanceCalculator.calculateDistance(ciscoLong, ciscoLat, newCiscoPointlon, newCiscoPointlat);
-        System.out.println("NY Avstanden b blir: " + bdistance);
-
-
-
         //Calculating the angle between the vector from the expected points and the vector from the
         // real points using the cosine law. This gives us an angle ∈ [0,PI].
         angle = (float) acos((aVectorLengthSquared + bVectorLengthSquared - cVectorLengthSquared)
@@ -115,15 +103,11 @@ float bdistance = distanceCalculator.calculateDistance(ciscoLong, ciscoLat, newC
 
 
 
-        System.out.println("The angle to rotate: " + angle);
-        System.out.println("This angle is" + angle / PI + "*PI");
-
-
         //If the y-element of the b-vector is negative, that means loomo has been driving
-        // south, to some extent. This means, if we're to rotate the coordinates to fit loomo,
-        // they will need to be rotated in the negative direction, or with the clock. -> angle = -angle
+        // southwards. This means, if we are to rotate the coordinates to fit loomo,
+        // they will need to be rotated in the positive direction, or against the clock. -> angle = angle
         // If the y-element is positive, then loomo has been driving north, and the coordinates will
-        // need to be rotated against the clock. Then "angle" will be the positive value
+        // need to be rotated with the clock. Then "angle" will be the negative value
         // found with the cosine law.
 
         if (bVector[1] < 0) {
@@ -132,15 +116,14 @@ float bdistance = distanceCalculator.calculateDistance(ciscoLong, ciscoLat, newC
             angle = -angle;
         }
 
-        System.out.println("We will be rotating with: " + angle );
+        System.out.println("The angle between the reference systems are: " + angle + ", which equals " +  angle / PI + "*PI\n" );
+
         mBase.cleanOriginalPoint();
 
         //Setting Fetching the original point where Loomo stands.
         mBase.cleanOriginalPoint();
         Pose2D pose2D = mBase.getOdometryPose(-1);
         mBase.setOriginalPoint(pose2D);
-
-        //TODO: FJERN DETTE:
 
         //Kjøreretning mot Nord: 	58.334512491588754 og 8.576253530218082 til 58.33452608839093 og 8.576253888068521
         //Kjøreretning mot Øst:     58.33452608839093 og 8.576253888068521 til 58.33452618178464 og 8.576285073219395

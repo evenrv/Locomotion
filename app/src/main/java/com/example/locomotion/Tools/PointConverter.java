@@ -14,14 +14,15 @@ public class PointConverter {
         double[] xcoords = new double[checkPoints.size()];
         double[] ycoords = new double[checkPoints.size()];
 
-
+        System.out.println("Path in Longitude and latitude from MazeMap: ");
         for (int position = 0;position< checkPoints.size(); position++) {
 
             //Creating a new point, which will be the same point as fetched from the url,
             // but from loomos local reference frame. These points are also multiplied with
             // metersperLatitude and metersperlongitude so that they're unit will be in meters.
 
-
+            System.out.println("longitude: " + checkPoints.get(position)[0]);
+            System.out.println("latitude: " + checkPoints.get(position)[1]);
 
             Double[] singleLocalCheckpoint = {
 
@@ -33,7 +34,8 @@ public class PointConverter {
             checkPoints.set(position, singleLocalCheckpoint);
         }
 
-
+        System.out.println("\n");
+        System.out.println("Path converted to meters, but not transformed: ");
 
         //Transforming the points with matrix multiplication. The output coordinates will
         // be from Loomos reference frame, but transformed, so that the difference in orientation
@@ -42,6 +44,9 @@ public class PointConverter {
         for (int position = 0;position< checkPoints.size(); position++) {
 
             Double[] singleTransformedCheckpoint = new Double [2];
+
+            System.out.println("x: " + checkPoints.get(position)[0]);
+            System.out.println("y: " + checkPoints.get(position)[1]);
 
 
             singleTransformedCheckpoint[0] =

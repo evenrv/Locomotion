@@ -23,8 +23,8 @@ public class Drive {
     private ObstacleAvoidance obstacleAvoidance = new ObstacleAvoidance();
     private float correctedY;
     private float correctedX;
+    private float rotationAngle;
     private int timerValue = 0;
-    long currentTime = System.currentTimeMillis();
 
 
     //The function that adds checkpoints for Loomo
@@ -40,7 +40,8 @@ public class Drive {
         //Iterating through both coordinate-lists and adding one checkpoint each iteration.
         //"driving" is set to true each iteration
         //i starts at 1 because the first point in the array is the position of Loomo
-        for (int point= 1;point< coordx.length; ++point) {
+        for (int point= 1;point< coordx.length - 1; ++point) {
+            //TODO: coordx.length - 1 pleide å være bare coord.length. Endret fordi den snur seg når den når checkpointet. Kanskje dette hjelper?
 
 
             //x and y are the coordinates that will be used in mBase.addcheckPoint.
@@ -76,7 +77,7 @@ public class Drive {
                 //In each iteration, if the right infrared sensor is closer than 1250 mm from a
                 //wall, an increment will be added to the y coordinate.
                 //(y is positive to the left while looking forward).
-               /* if (mInfraredDistanceRight < 1250 && mInfraredDistanceRight < mInfraredDistanceLeft ){
+                if (mInfraredDistanceRight < 1250 && mInfraredDistanceRight < mInfraredDistanceLeft ){
 
 
                     //The current coordinates and orientation is fetched
@@ -113,7 +114,7 @@ public class Drive {
                     mBase.addCheckPoint(correctedX,correctedY);
                     System.out.println("left: " + mInfraredDistanceLeft);
                 }
-*/
+
 
 
 
@@ -134,7 +135,6 @@ public class Drive {
 
                         }
                         */
-
                         driving = false;
                     }
 
@@ -158,28 +158,27 @@ public class Drive {
                      mBase.clearCheckPointsAndStop();
                      boolean waitForObstacle = true;
                      timerValue = 0;
-                   //  long startTime = System.currentTimeMillis();
+                     long startTime = System.currentTimeMillis();
 
                     while(waitForObstacle){
-                       // currentTime = System.currentTimeMillis();
-
                         SensorData mUltrasonicData1 = mSensor.querySensorData(Arrays.
                                 asList(Sensor.ULTRASONIC_BODY)).get(0);
                         float mUltrasonicDistance1 = mUltrasonicData1.getIntData()[0];
 
                         System.out.println("mUltrasonicDistance1:  " + mUltrasonicDistance1);
                         timerValue++;
-                        System.out.println("Timer value: " + "----------------" + (timerValue));
+                        System.out.println("Timer value: " + "----------------" + timerValue);
+
 
                         //If the obstacle moves, Loomo will add a checkpoint at the previous
-                        //checkpoint ( correctedX, correctedY )
+                        //checkpoint ( x, correctedY )
                         if(mUltrasonicDistance1 > 900){
                             waitForObstacle = false;
-                            mBase.addCheckPoint(correctedX,correctedY);
+                            mBase.addCheckPoint(x,correctedY);
                         }
 
-                        //If the time that has passed is larger than 3 seconds.
-                        else if (timerValue> 3000){
+                        else if (timerValue == 3500){
+                            System.out.println("TIME:----------------------________-------" + (System.currentTimeMillis()- startTime) );
                             obstacle = true;
                             driving = false;
                             waitForObstacle = false;

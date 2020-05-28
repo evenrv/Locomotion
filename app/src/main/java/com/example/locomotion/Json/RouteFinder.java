@@ -44,7 +44,7 @@ public class RouteFinder extends AsyncTask<ParseInfo, Void, ParseInfo>   {
             Double[] ciscoCoords;
 
             //Cisco returns the following values for location:
-            ciscoCoords = new Double[]{8.576170839175433, 58.334475507774954, 3.0};
+            ciscoCoords = new Double[]{8.57617413279317, 58.334468102336245, 3.0};
             String urlPath;
             urlPath = urlMaker.makeUrl(ciscoCoords, avgCoord, roomInfo.z);
 
@@ -76,10 +76,10 @@ public class RouteFinder extends AsyncTask<ParseInfo, Void, ParseInfo>   {
             parseInfo.xcoords = output[0];
             parseInfo.ycoords = output[1];
 
-
+            System.out.println("Transformed path: ");
             for(int coordinate = 0; coordinate < parseInfo.xcoords.length; coordinate++){
-                System.out.println(parseInfo.xcoords[coordinate]);
-                System.out.println(parseInfo.ycoords[coordinate]);
+                System.out.println("x: " + parseInfo.xcoords[coordinate]);
+                System.out.println("y: " + parseInfo.ycoords[coordinate]);
             }
 
 
