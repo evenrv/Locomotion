@@ -17,6 +17,7 @@ public class ObstacleAvoidance{
     private boolean goingLeft = false;
     private float avoidanceDist = 1;        //Length of one of the vectors used to drive
                                                // around an obstacle
+    float checkLeftAngle;
 
 
 
@@ -145,14 +146,14 @@ public class ObstacleAvoidance{
         // around the obstacle. goingLeft decides whether if Loomo will check the right side after
         //checking the left side.
 
-        float checkLeftAngle = (float) (currentTheta + Math.PI / 2);
+        checkLeftAngle = (float) (currentTheta + Math.PI / 2);
         mBase.addCheckPoint(currentx, currenty, checkLeftAngle);
         boolean checkingLeft = true;
-        int timer = 0;
+        long startTime = System.currentTimeMillis();
 
 
         while (checkingLeft){
-            timer++;
+
 
             SensorData mUltrasonicData = mSensor.querySensorData(Arrays.
                     asList(Sensor.ULTRASONIC_BODY)).get(0);
@@ -164,7 +165,9 @@ public class ObstacleAvoidance{
                 goingLeft = true;
             }
 
-            else if (timer == 3500){
+            //If the difference in system time is more than 3 seconds, then that means 3 seconds
+            //have passed.
+            else if (System.currentTimeMillis() - startTime > 3000 ){
                 System.out.println("Not possible to go left.");
                 checkingLeft = false;
                 goingLeft = false;
@@ -181,10 +184,9 @@ public class ObstacleAvoidance{
             float checkRightAngle = (float) (currentTheta - Math.PI / 2);
             mBase.addCheckPoint(currentx, currenty, checkRightAngle);
             boolean checkingRight = true;
-            timer = 0;
+            startTime = System.currentTimeMillis();
 
             while (checkingRight){
-                timer = timer++;
 
                 SensorData mUltrasonicData = mSensor.querySensorData(Arrays.
                         asList(Sensor.ULTRASONIC_BODY)).get(0);
@@ -195,7 +197,7 @@ public class ObstacleAvoidance{
                     checkingRight = false;
                 }
 
-                else if (timer == 3500){
+                else if (System.currentTimeMillis() - startTime > 3000){
                     System.out.println("Not possible to drive around. Calculate new route...");
                 }
             }

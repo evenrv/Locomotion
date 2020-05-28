@@ -125,10 +125,10 @@ DistanceCalculator distanceCalculator = new DistanceCalculator();
         Pose2D pose2D = mBase.getOdometryPose(-1);
         mBase.setOriginalPoint(pose2D);
 
-        //Kjøreretning mot Nord: 	58.334512491588754 og 8.576253530218082 til 58.33452608839093 og 8.576253888068521
-        //Kjøreretning mot Øst:     58.33452608839093 og 8.576253888068521 til 58.33452618178464 og 8.576285073219395
-        //Kjøreretning mot Vest:    58.33452618178464 og 8.576285073219395 til 58.33452693486112 og 8.576258173706947
-        //Kjøreretning mot Sør:     58.33452693486112 og 8.576258173706947 til 58.33451544969185 og 8.576258890746544
+        //Driving North: 	58.334512491588754, 8.576253530218082 to 58.33452608839093, 8.576253888068521
+        //Driving East:     58.33452608839093, 8.576253888068521 to 58.33452618178464, 8.576285073219395
+        //Driving West:    58.33452618178464, 8.576285073219395 to 58.33452693486112, 8.576258173706947
+        //Driving South:     58.33452693486112, 8.576258173706947 to 58.33451544969185, 8.576258890746544
 
         float[] calibInfo = {angle, (float) metersPerLongitude, (float) metersPerLatitude};
         return calibInfo;

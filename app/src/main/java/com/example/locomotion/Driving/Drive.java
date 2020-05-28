@@ -39,9 +39,10 @@ public class Drive {
 
         //Iterating through both coordinate-lists and adding one checkpoint each iteration.
         //"driving" is set to true each iteration
-        //i starts at 1 because the first point in the array is the position of Loomo
+        //i starts at 1 because the first point in the array is the position of Loomo.
+        //i ends at coordx.length - 1 because the last point in the array is usually a point
+        // within or very close to the room.
         for (int point= 1;point< coordx.length - 1; ++point) {
-            //TODO: coordx.length - 1 pleide å være bare coord.length. Endret fordi den snur seg når den når checkpointet. Kanskje dette hjelper?
 
 
             //x and y are the coordinates that will be used in mBase.addcheckPoint.
@@ -55,11 +56,14 @@ public class Drive {
             correctedY = y;
             correctedX = x;
             driving = true;
+            int counterVariable = 0;
             System.out.println("Added point------------------------" +point + "--------------Out of" + (coordx.length -1) + "points");
 
 
             //Everything happening while Loomo is driving will be in this while loop.
             while (driving) {
+
+                counterVariable++;
 
                 //Fetching the ultrasonic distance
                 SensorData mUltrasonicData = mSensor.querySensorData(Arrays.
@@ -79,19 +83,17 @@ public class Drive {
                 //(y is positive to the left while looking forward).
 
 
-                if (mInfraredDistanceRight < 1250 && mInfraredDistanceRight < mInfraredDistanceLeft ){
+                if (mInfraredDistanceRight < 1000 && mInfraredDistanceRight < mInfraredDistanceLeft && (counterVariable % 100  == 0) ){
 
 
                     //The current coordinates and orientation is fetched
                     Pose2D pose2D = mBase.getOdometryPose(-1);
-                    float currentX = pose2D.getX();
-                    float currentY = pose2D.getY();
                     float currentTheta = pose2D.getTheta();
 
                     //Calculations to make Loomo go to the left. These are the calculations from
                     //ObstacleAvoidance, but the increment is reduced to 0.05 meters
-                    correctedX  = currentX + (float) cos(currentTheta + PI/2)*0.05f;
-                    correctedY =  currentY + (float) sin(currentTheta + PI/2)*0.05f;
+                    correctedX  = correctedX + (float) cos(currentTheta + PI/2)*0.5f;
+                    correctedY =  correctedY + (float) sin(currentTheta + PI/2)*0.5f;
 
                     mBase.clearCheckPointsAndStop();
                     mBase.addCheckPoint(correctedX,correctedY);
@@ -100,19 +102,17 @@ public class Drive {
 
                 //If the left sensor is less than 1250 mm away from a wall, then a decrement will
                 //be subtracted from y. This will make loomo turn right.
-                if (mInfraredDistanceLeft < 1250 && mInfraredDistanceLeft < mInfraredDistanceRight ){
+                if (mInfraredDistanceLeft < 1000 && mInfraredDistanceLeft < mInfraredDistanceRight && (counterVariable % 100  == 0)){
 
 
                     //The current coordinates and orientation is fetched
                     Pose2D pose2D = mBase.getOdometryPose(-1);
-                    float currentX = pose2D.getX();
-                    float currentY = pose2D.getY();
                     float currentTheta = pose2D.getTheta();
 
                     //Calculations to make Loomo go to the left. These are the calculations from
                     //ObstacleAvoidance, but the increment is reduced to 0.05 meters
-                    correctedX  = currentX + (float) cos(currentTheta - PI/2)*0.05f;
-                    correctedY =  currentY + (float) sin(currentTheta - PI/2)*0.05f;
+                    correctedX  = correctedX + (float) cos(currentTheta - PI/2)*0.5f;
+                    correctedY =  correctedY + (float) sin(currentTheta - PI/2)*0.5f;
 
                     mBase.clearCheckPointsAndStop();
                     mBase.addCheckPoint(correctedX,correctedY);
