@@ -17,14 +17,12 @@ import androidx.appcompat.widget.Toolbar;
 
 import com.example.locomotion.Datatype.ParseInfo;
 import com.example.locomotion.Driving.Drive;
-import com.example.locomotion.FindRoom.FindRoom;
+import com.example.locomotion.Tools.FindRoom;
 import com.example.locomotion.Json.CreateRooms;
 import com.example.locomotion.Json.RouteFinder;
-import com.example.locomotion.Tools.Binders;
 import com.example.locomotion.Tools.Calibrate;
 import com.example.locomotion.Tools.CISCO.Cisco;
 import com.example.locomotion.Tools.CISCO.CiscoArr;
-import com.example.locomotion.Tools.CISCO.CiscoInfo;
 import com.google.android.material.snackbar.Snackbar;
 import com.segway.robot.sdk.base.bind.ServiceBinder;
 import com.segway.robot.sdk.locomotion.head.Head;

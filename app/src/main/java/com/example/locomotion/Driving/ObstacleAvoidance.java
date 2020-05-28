@@ -138,14 +138,14 @@ public class ObstacleAvoidance{
         float currentTheta = pose2D.getTheta();
 
 
-        //Checking left side by rotating with an angle of PI/4 from the current angle.
+        //Checking left side by rotating with an angle of PI/2 from the current angle.
         //addCheckpoint is the method that rotates loomo
         //checkingLeft is true while Loomo rotates, and waits while timer counts to 2000
         //If the ultrasonic distance is more than 900, the goLeft function will be called to drive
         // around the obstacle. goingLeft decides whether if Loomo will check the right side after
         //checking the left side.
 
-        float checkLeftAngle = (float) (currentTheta + Math.PI / 4);
+        float checkLeftAngle = (float) (currentTheta + Math.PI / 2);
         mBase.addCheckPoint(currentx, currenty, checkLeftAngle);
         boolean checkingLeft = true;
         int timer = 0;
@@ -178,7 +178,7 @@ public class ObstacleAvoidance{
         //or  ask for help
 
         if (!goingLeft){
-            float checkRightAngle = (float) (currentTheta - Math.PI / 4);
+            float checkRightAngle = (float) (currentTheta - Math.PI / 2);
             mBase.addCheckPoint(currentx, currenty, checkRightAngle);
             boolean checkingRight = true;
             timer = 0;

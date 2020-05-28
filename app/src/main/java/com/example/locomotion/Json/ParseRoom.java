@@ -1,4 +1,4 @@
-package com.example.locomotion.FindRoom;
+package com.example.locomotion.Json;
 
 import com.example.locomotion.Json.ParseJSON;
 import com.example.locomotion.Datatype.RoomInfo;

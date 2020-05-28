@@ -5,7 +5,6 @@ import android.os.AsyncTask;
 import com.example.locomotion.Datatype.ParseInfo;
 import com.example.locomotion.Datatype.PathInfo;
 import com.example.locomotion.Datatype.RoomInfo;
-import com.example.locomotion.FindRoom.ParseRoom;
 import com.example.locomotion.Tools.PointConverter;
 import com.example.locomotion.Tools.RoomCenter;
 import com.example.locomotion.Tools.UrlMaker;
@@ -81,9 +80,6 @@ public class RouteFinder extends AsyncTask<ParseInfo, Void, ParseInfo>   {
                 System.out.println("x: " + parseInfo.xcoords[coordinate]);
                 System.out.println("y: " + parseInfo.ycoords[coordinate]);
             }
-
-
-
             return parseInfo;
         }
     }

@@ -77,6 +77,8 @@ public class Drive {
                 //In each iteration, if the right infrared sensor is closer than 1250 mm from a
                 //wall, an increment will be added to the y coordinate.
                 //(y is positive to the left while looking forward).
+
+
                 if (mInfraredDistanceRight < 1250 && mInfraredDistanceRight < mInfraredDistanceLeft ){
 
 
@@ -91,6 +93,7 @@ public class Drive {
                     correctedX  = currentX + (float) cos(currentTheta + PI/2)*0.05f;
                     correctedY =  currentY + (float) sin(currentTheta + PI/2)*0.05f;
 
+                    mBase.clearCheckPointsAndStop();
                     mBase.addCheckPoint(correctedX,correctedY);
                     System.out.println("Right: " + mInfraredDistanceRight);
                 }
@@ -111,10 +114,9 @@ public class Drive {
                     correctedX  = currentX + (float) cos(currentTheta - PI/2)*0.05f;
                     correctedY =  currentY + (float) sin(currentTheta - PI/2)*0.05f;
 
+                    mBase.clearCheckPointsAndStop();
                     mBase.addCheckPoint(correctedX,correctedY);
-                    System.out.println("left: " + mInfraredDistanceLeft);
                 }
-
 
 
 
@@ -149,15 +151,12 @@ public class Drive {
                 //is detected less than 900mm away from Loomo, then Loomo will stop. It will wait
                 //for 3 seconds before either continuing the route, or exiting the while(driving)
                 //loop, and try to avoid the obstacle.
-                //TimerValue counts iteration, and 3500 iterations gives a fair time for the
-                //obstacle to move.
                 // It is also possible to use Loomos camera to detect what the obstacle might be.
                 // If it is a human, for instance, Loomo could tell it to move out if its path.
                  if (mUltrasonicDistance < 600){
 
                      mBase.clearCheckPointsAndStop();
                      boolean waitForObstacle = true;
-                     timerValue = 0;
                      long startTime = System.currentTimeMillis();
 
                     while(waitForObstacle){
@@ -166,9 +165,6 @@ public class Drive {
                         float mUltrasonicDistance1 = mUltrasonicData1.getIntData()[0];
 
                         System.out.println("mUltrasonicDistance1:  " + mUltrasonicDistance1);
-                        timerValue++;
-                        System.out.println("Timer value: " + "----------------" + timerValue);
-
 
                         //If the obstacle moves, Loomo will add a checkpoint at the previous
                         //checkpoint ( x, correctedY )
@@ -177,8 +173,10 @@ public class Drive {
                             mBase.addCheckPoint(x,correctedY);
                         }
 
-                        else if (timerValue == 3500){
-                            System.out.println("TIME:----------------------________-------" + (System.currentTimeMillis()- startTime) );
+
+                        //Loomo will try to avoid the obstacle if 3000 milliseconds have passed.
+                        else if (System.currentTimeMillis()- startTime > 3000){
+
                             obstacle = true;
                             driving = false;
                             waitForObstacle = false;
