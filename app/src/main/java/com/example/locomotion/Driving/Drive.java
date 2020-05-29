@@ -23,8 +23,6 @@ public class Drive {
     private ObstacleAvoidance obstacleAvoidance = new ObstacleAvoidance();
     private float correctedY;
     private float correctedX;
-    private float rotationAngle;
-    private int timerValue = 0;
 
 
     //The function that adds checkpoints for Loomo

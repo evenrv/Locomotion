@@ -1,25 +1,16 @@
 package com.example.locomotion.usb;
 
-import android.content.Context;
-import android.content.pm.ActivityInfo;
+
 import android.hardware.usb.UsbDevice;
 import android.os.Bundle;
 import android.os.Handler;
-/*
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
- */
-//TODO: muligens ikke nodvendig
-import android.text.Html;
-import android.text.method.ScrollingMovementMethod;
+
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Spinner;
+
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -227,4 +218,4 @@ public class SerialArduino extends AppCompatActivity implements ArduinoListener 
         }
         });
         }
-        }
+}
