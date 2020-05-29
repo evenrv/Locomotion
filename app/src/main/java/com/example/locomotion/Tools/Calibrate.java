@@ -14,21 +14,8 @@ import static java.lang.StrictMath.sqrt;
 
 
 public class Calibrate {
-float angle;
-float OriginCiscoPositionx;
-float OriginCiscoPositiony;
-float ExpectedCiscoPositionx2;
-float ExpectedCiscoPositiony2;
-float newCiscoPointlon;
-float newCiscoPointlat;
-float ActualCiscoPositionx2;
-float ActualCiscoPositiony2;
-double aVectorLengthSquared;
-double bVectorLengthSquared;
-double cVectorLengthSquared;
-float distance;
-DistanceCalculator distanceCalculator = new DistanceCalculator();
 
+    private DistanceCalculator distanceCalculator = new DistanceCalculator();
 
 
 
@@ -53,8 +40,8 @@ DistanceCalculator distanceCalculator = new DistanceCalculator();
         metersPerLatitude= distanceCalculator.calculateDistance(ciscoLong, ciscoLat, ciscoLong, ciscoLat + 1.0);
 
 
-        OriginCiscoPositionx =  ciscoLong * (float) metersPerLongitude;
-        OriginCiscoPositiony =  ciscoLat *  (float) metersPerLatitude;
+        float originCiscoPositionx = ciscoLong * (float) metersPerLongitude;
+        float originCiscoPositiony = ciscoLat * (float) metersPerLatitude;
 
 
         //Driving 1 meter forward test
@@ -67,29 +54,28 @@ DistanceCalculator distanceCalculator = new DistanceCalculator();
 
 
         //If Loomo was already headed east, we would expect these coordinates in meters:
-        ExpectedCiscoPositionx2 = (OriginCiscoPositionx + 1);
-        ExpectedCiscoPositiony2 = (((OriginCiscoPositiony)));
+        float expectedCiscoPositionx2 = (originCiscoPositionx + 1);
 
-        newCiscoPointlon = (float) 8.57617413279317;
-        newCiscoPointlat = (float) 58.334468102336245;
+        float newCiscoPointlon = (float) 8.57617413279317;
+        float newCiscoPointlat = (float) 58.334468102336245;
 
 
-        ActualCiscoPositionx2 =  newCiscoPointlon * (float) metersPerLongitude;
-        ActualCiscoPositiony2 = newCiscoPointlat  * (float) metersPerLatitude;
+        float actualCiscoPositionx2 = newCiscoPointlon * (float) metersPerLongitude;
+        float actualCiscoPositiony2 = newCiscoPointlat * (float) metersPerLatitude;
 
 
 
         //Defining 3 vectors that make up a triangle abc
-        double[] aVector = {ExpectedCiscoPositionx2 - OriginCiscoPositionx, ExpectedCiscoPositiony2 - OriginCiscoPositiony};
-        double[] bVector = {ActualCiscoPositionx2 - OriginCiscoPositionx, ActualCiscoPositiony2 - OriginCiscoPositiony};
-        double[] cVector = {ExpectedCiscoPositionx2 - ActualCiscoPositionx2, ExpectedCiscoPositiony2 - ActualCiscoPositiony2};
+        double[] aVector = {expectedCiscoPositionx2 - originCiscoPositionx, originCiscoPositiony - originCiscoPositiony};
+        double[] bVector = {actualCiscoPositionx2 - originCiscoPositionx, actualCiscoPositiony2 - originCiscoPositiony};
+        double[] cVector = {expectedCiscoPositionx2 - actualCiscoPositionx2, originCiscoPositiony - actualCiscoPositiony2};
 
 
 
         //Calculating the length of each vector / side of the triangle with the pythagorean therm.
-        aVectorLengthSquared = Math.pow(aVector[0], 2.0) + Math.pow(aVector[1], 2.0);
-        bVectorLengthSquared = Math.pow(bVector[0], 2.0) + Math.pow(bVector[1], 2.0);
-        cVectorLengthSquared = Math.pow(cVector[0], 2.0) + Math.pow(cVector[1], 2.0);
+        double aVectorLengthSquared = Math.pow(aVector[0], 2.0) + Math.pow(aVector[1], 2.0);
+        double bVectorLengthSquared = Math.pow(bVector[0], 2.0) + Math.pow(bVector[1], 2.0);
+        double cVectorLengthSquared = Math.pow(cVector[0], 2.0) + Math.pow(cVector[1], 2.0);
 
         System.out.println("Length a = " + sqrt(aVectorLengthSquared));
         System.out.println("Length b = " + sqrt(bVectorLengthSquared));
@@ -98,7 +84,7 @@ DistanceCalculator distanceCalculator = new DistanceCalculator();
 
         //Calculating the angle between the vector from the expected points and the vector from the
         // real points using the cosine law. This gives us an angle ∈ [0,PI].
-        angle = (float) acos((aVectorLengthSquared + bVectorLengthSquared - cVectorLengthSquared)
+        float angle = (float) acos((aVectorLengthSquared + bVectorLengthSquared - cVectorLengthSquared)
                 / (2 * sqrt(aVectorLengthSquared) * sqrt(bVectorLengthSquared)));
 
 

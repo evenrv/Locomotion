@@ -1,6 +1,5 @@
 package com.example.locomotion.Json;
 
-import com.example.locomotion.Json.ParseJSON;
 import com.example.locomotion.Datatype.RoomInfo;
 
 import org.json.JSONException;
